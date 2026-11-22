@@ -61,7 +61,10 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 .stat{padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;margin:10px 0}
 .stat.ok{background:#dcfce7;color:#166534}.stat.bad{background:#fee2e2;color:#991b1b}.stat.wait{background:#e0f2fe;color:#075985}
 @media(max-width:820px){.main{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+#repWrap{position:absolute;left:-12000px;top:0;width:740px}
+@media print{body>*:not(#repWrap){display:none!important}#repWrap{position:static!important;width:auto!important}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -69,13 +72,13 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 <div id="start" class="center"><div class="card">
   <h1>JEE Main Mock Test</h1>
   <p style="margin:0 0 8px;color:var(--mut)">Physics • Chemistry • Mathematics</p>
-  <div class="fld"><label>STUDENT NAME</label><input id="fName" placeholder="Apna poora naam likhein" maxlength="60" autocomplete="off"></div>
+  <div class="fld"><label>STUDENT NAME</label><input id="fName" placeholder="Enter your full name" maxlength="60" autocomplete="off"></div>
   <div class="row2">
-    <div class="fld"><label>STATE</label><input id="fState" placeholder="Type karke select karein" autocomplete="off"><div class="sgb hidden" id="sState"></div></div>
-    <div class="fld"><label>CITY</label><input id="fCity" placeholder="Pehle state select karein" autocomplete="off"><div class="sgb hidden" id="sCity"></div></div>
+    <div class="fld"><label>STATE</label><input id="fState" placeholder="Type to search and select" autocomplete="off"><div class="sgb hidden" id="sState"></div></div>
+    <div class="fld"><label>CITY</label><input id="fCity" placeholder="Select a state first" autocomplete="off"><div class="sgb hidden" id="sCity"></div></div>
   </div>
-  <div class="fld"><label>SCHOOL NAME</label><input id="fSchool" placeholder="School ka naam type karein" autocomplete="off"><div class="sgb hidden" id="sSchool"></div>
-    <div class="hint">List me school na mile to poora naam khud type karein — wo agli baar suggestion me aa jayega.</div></div>
+  <div class="fld"><label>SCHOOL NAME</label><input id="fSchool" placeholder="Type your school name" autocomplete="off"><div class="sgb hidden" id="sSchool"></div>
+    <div class="hint">If your school is not in the list, type its full name — it will appear as a suggestion next time.</div></div>
   <div class="err" id="fErr"></div>
   <ul id="rules"></ul>
   <button class="btn" id="go" style="width:100%;margin-top:10px;font-size:16px">START EXAM</button>
@@ -85,7 +88,7 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 <div id="exam" class="hidden">
   <header>
     <div><b>JEE Main Mock Test</b><br><small id="who"></small></div>
-    <span id="viol">Warnings: 0</span>
+    <span id="viol">Warnings: 0/2</span>
     <span class="timer" id="timer">00:00:00</span>
     <button class="btn red" id="subBtn">Submit Paper</button>
   </header>
@@ -107,6 +110,7 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 </div>
 
 <div id="result" class="center hidden"></div>
+<div id="repWrap"><div id="rep"></div></div>
 
 <div id="alert" class="ov hidden"><div class="box">
   <h2 id="aT"></h2><p id="aM" style="color:var(--mut)"></p>
@@ -124,8 +128,9 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 const CFG = {
   examName: 'UT-04 (31/10/26)',
   minutes: 180,
-  grace: 10,      // Warning 1: itne second me wapas aana hai
-  final: 5,       // Warning 2: itne second baad auto-submit
+  maxWarn: 2,     // allowed warnings (each time the student leaves the exam screen). The 3rd exit = instant submit
+  grace: 10,      // seconds allowed to return after leaving the screen
+  final: 5,       // extra final-countdown seconds, then auto-submit
   plus: 4, minus: 1,
   numMinus: 1,    // Numerical galat jawab pe minus marks (0 kar do agar negative nahi chahiye)
   sheetURL: 'https://script.google.com/macros/s/AKfycbyniEd_4CxPjJ7AwQyBQVUVVexIAJiMY_Czl5tzFHo1vURLcv8b06Bsh4a6uAAs6W9Yxw/exec'   // <-- Code.gs deploy karke yahan paste karein
@@ -298,11 +303,13 @@ let cur = 0, run = false, endAt = 0, startAt = 0, viol = 0, vN = 0, ac, beepT, t
 const isAns = i => Q[i].t === 'm' ? ans[i] >= 0 : String(ans[i]).trim() !== '';
 
 $('rules').innerHTML =
-  '<li><b>' + Q.length + ' questions</b> • ' + CFG.minutes + ' minutes • Physics, Chemistry, Maths (har subject me 20 MCQ + 5 Numerical)</li>' +
-  '<li>Sahi jawab: <b>+' + CFG.plus + '</b> • MCQ galat: <b>−' + CFG.minus + '</b> • Numerical galat: <b>−' + CFG.numMinus + '</b></li>' +
-  '<li><b>Start Exam</b> dabate hi timer shuru hoga aur screen <b>full screen</b> ho jayegi.</li>' +
-  '<li>Exam screen chhodne par (full screen exit, tab/window switch) <b>alarm</b> bajega.</li>' +
-  '<li><b>Warning 1:</b> ' + CFG.grace + ' second me wapas aayein. Nahi aaye to <b>Warning 2:</b> ' + CFG.final + ' second ka countdown, uske baad paper <b>auto-submit</b>.</li>';
+  '<li><b>' + Q.length + ' questions</b> • ' + CFG.minutes + ' minutes • Physics, Chemistry, Maths (20 MCQ + 5 Numerical in each subject)</li>' +
+  '<li>Correct answer: <b>+' + CFG.plus + '</b> • Wrong MCQ: <b>−' + CFG.minus + '</b> • Wrong Numerical: <b>−' + CFG.numMinus + '</b></li>' +
+  '<li>Clicking <b>Start Exam</b> starts the timer and switches the screen to <b>full screen</b>.</li>' +
+  '<li>Leaving the exam screen (exiting full screen, switching tab or window) sounds an <b>alarm</b> and counts as a <b>warning</b>.</li>' +
+  '<li>You have <b>' + CFG.maxWarn + ' warnings</b>. After each exit you must return within ' + CFG.grace + ' seconds (then a ' + CFG.final + '-second final countdown starts, after which the paper is auto-submitted).</li>' +
+  '<li style="color:#b91c1c"><b>The 3rd time you leave the exam screen, your paper is submitted immediately.</b></li>' +
+  '<li>After submission you can download a <b>personal PDF report</b>: your performance analysis plus step-by-step solutions of the questions you got wrong or skipped. Your report is private to you.</li>';
 
 // ===================== Smart suggest =====================
 function suggest(inp, box, getList, onPick) {
@@ -333,7 +340,7 @@ function suggest(inp, box, getList, onPick) {
 const stateNames = Object.keys(STATES);
 const norm = s => s.trim().toLowerCase();
 const stateKey = () => stateNames.find(s => norm(s) === norm($('fState').value)) || '';
-suggest($('fState'), $('sState'), () => stateNames, () => { $('fCity').value = ''; $('fSchool').value = ''; $('fCity').placeholder = 'City type karein'; $('fCity').focus(); });
+suggest($('fState'), $('sState'), () => stateNames, () => { $('fCity').value = ''; $('fSchool').value = ''; $('fCity').placeholder = 'Type your city'; $('fCity').focus(); });
 suggest($('fCity'), $('sCity'), () => { const k = stateKey(); return k ? STATES[k].split(',') : []; }, () => { $('fSchool').value = ''; $('fSchool').focus(); });
 suggest($('fSchool'), $('sSchool'), () => {
   const k = stateKey(), c = norm($('fCity').value);
@@ -418,7 +425,7 @@ $('cY').onclick = () => submit('You submitted the paper.', 'Manual submit');
 // ===================== Start =====================
 $('go').onclick = () => {
   const name = $('fName').value.trim().replace(/\s+/g, ' '), st = stateKey(), city = $('fCity').value.trim(), sch = $('fSchool').value.trim();
-  const err = !name || name.length < 3 ? 'Apna poora naam likhein.' : !st ? 'List me se State select karein.' : city.length < 2 ? 'City likhein ya select karein.' : sch.length < 3 ? 'School ka naam likhein ya select karein.' : '';
+  const err = !name || name.length < 3 ? 'Please enter your full name.' : !st ? 'Please select your State from the list.' : city.length < 2 ? 'Please enter or select your City.' : sch.length < 3 ? 'Please enter or select your School name.' : '';
   $('fErr').textContent = err;
   if (err) return;
   Object.assign(ST, { name, state: st, city, school: sch });
@@ -458,7 +465,12 @@ function chk() {
   const ok = !!document.fullscreenElement && !document.hidden && document.hasFocus();
   if (!ok && !viol) {
     viol = Date.now(); vN++;
-    $('viol').textContent = 'Warnings: ' + vN;
+    if (vN > CFG.maxWarn) {   // 3rd exit -> instant submit
+      $('viol').textContent = 'Warnings: ' + CFG.maxWarn + '/' + CFG.maxWarn;
+      submit('You have crossed the limit of ' + CFG.maxWarn + ' warnings, so your paper has been submitted automatically.', 'Auto-submit (crossed ' + CFG.maxWarn + '-warning limit)');
+      return;
+    }
+    $('viol').textContent = 'Warnings: ' + vN + '/' + CFG.maxWarn;
     $('alert').classList.remove('hidden');
     startBeep(); tick();
   } else if (ok && viol) {
@@ -484,12 +496,12 @@ function tick() {
     const e = (now - viol) / 1000;
     if (e >= CFG.grace + CFG.final) { submit('You stayed away from the exam screen, so your paper was auto-submitted.', 'Auto-submit (left screen)'); return; }
     if (e >= CFG.grace) {
-      $('aT').textContent = '⚠ WARNING 2 — Paper will be submitted!';
+      $('aT').textContent = '⚠ FINAL COUNTDOWN — Paper will be submitted!';
       $('aM').textContent = 'You did not return to the exam screen. Auto-submit in';
       $('aC').textContent = Math.ceil(CFG.grace + CFG.final - e);
     } else {
-      $('aT').textContent = '⚠ WARNING 1 — You left the exam screen!';
-      $('aM').textContent = 'Return to the exam screen within';
+      $('aT').textContent = '⚠ WARNING ' + vN + ' of ' + CFG.maxWarn + ' — You left the exam screen!';
+      $('aM').textContent = (vN >= CFG.maxWarn ? 'This was your LAST warning. If you leave the exam screen once more, your paper will be submitted immediately. ' : '') + 'Return to the exam screen within';
       $('aC').textContent = Math.ceil(CFG.grace - e);
     }
   }
@@ -510,6 +522,7 @@ function submit(msg, reason) {
     if (ok) { t.c++; t.m += CFG.plus; C++; }
     else { t.w++; t.m -= (q.t === 'm' ? CFG.minus : CFG.numMinus); W++; }
   });
+  const STAT = Q.map((q, i) => !isAns(i) ? 'u' : (q.t === 'm' ? ans[i] === q.a : Math.abs(parseFloat(ans[i]) - q.a) < 1e-6) ? 'c' : 'w');
   let rows = '';
   for (const k in SUB) { tot += T[k].m; rows += '<tr><td>' + SUB[k] + '</td><td>' + T[k].c + '</td><td>' + T[k].w + '</td><td>' + T[k].u + '</td><td><b>' + T[k].m + '</b></td></tr>'; }
   const rv = Q.map((q, i) => {
@@ -530,18 +543,24 @@ function submit(msg, reason) {
   };
   try { localStorage.setItem('jee_last_result', JSON.stringify(lastPayload)); } catch (e) {}
 
+  try { $('rep').innerHTML = buildReport(STAT, T, tot, C, W, U); } catch (e) { console.error(e); }
   $('exam').classList.add('hidden');
   $('result').classList.remove('hidden');
   $('result').innerHTML = '<div class="card"><h1>Test Submitted</h1><p style="color:var(--mut)">' + esc(msg) + '</p>' +
     '<p style="margin:4px 0"><b>' + esc(ST.name) + '</b><br><span style="color:var(--mut);font-size:13px">' + esc(ST.school) + ', ' + esc(ST.city) + ', ' + esc(ST.state) + '</span></p>' +
     '<div class="score">' + tot + ' <span style="font-size:20px;color:var(--mut)">/ ' + Q.length * CFG.plus + '</span></div>' +
     '<table><tr><th>Subject</th><th>Correct</th><th>Wrong</th><th>Skipped</th><th>Marks</th></tr>' + rows + '</table>' +
-    '<p style="font-size:13px;color:var(--mut)">Warnings (times you left the screen): ' + vN + '</p>' +
-    '<div id="saveStat" class="stat wait">Result save ho raha hai…</div>' +
-    '<button class="btn sec hidden" id="retry">Dobara save karein</button>' +
+    '<p style="font-size:13px;color:var(--mut)">Warnings (times you left the screen): ' + Math.min(vN, CFG.maxWarn) + ' of ' + CFG.maxWarn + (vN > CFG.maxWarn ? ' — limit crossed' : '') + '</p>' +
+    '<div id="saveStat" class="stat wait">Saving your result…</div>' +
+    '<button class="btn sec hidden" id="retry">Retry saving</button>' +
+    '<div class="stat wait" id="pdfStat">Preparing your personal PDF report…</div>' +
+    '<button class="btn" id="pdfBtn" style="width:100%;margin-bottom:8px">⬇ Download My Report (PDF)</button>' +
+    '<button class="btn sec hidden" id="prtBtn" style="width:100%">Print / Save as PDF instead</button>' +
     '<details><summary style="cursor:pointer;font-weight:700">Review answers</summary>' + rv + '</details></div>';
   $('retry').onclick = saveResult;
+  $('pdfBtn').onclick = makePDF; $('prtBtn').onclick = () => window.print();
   saveResult();
+  setTimeout(makePDF, 900);
 }
 
 async function post(body, noCors) {
@@ -551,24 +570,222 @@ async function post(body, noCors) {
 }
 async function saveResult() {
   const st = $('saveStat'), rb = $('retry');
-  st.className = 'stat wait'; st.textContent = 'Result save ho raha hai…'; rb.classList.add('hidden');
-  if (!CFG.sheetURL || CFG.sheetURL.includes('PASTE')) { fail('Sheet URL set nahi hai (CFG.sheetURL). Result sirf is browser me save hai.'); return; }
+  st.className = 'stat wait'; st.textContent = 'Saving your result…'; rb.classList.add('hidden');
+  if (!CFG.sheetURL || CFG.sheetURL.includes('PASTE')) { fail('Sheet URL is not configured. Result is saved only in this browser.'); return; }
   const body = JSON.stringify(lastPayload);
   try {
     const r = await post(body, false), j = await r.json();
     if (j.ok) { okMsg(); return; }
-    fail('Server ne error diya: ' + (j.error || 'unknown'));
+    fail('Server error: ' + (j.error || 'unknown'));
   } catch (e) {
     try { await post(body, true); okMsg(true); }   // duplicate-safe (id se), response read nahi ho paya
-    catch (e2) { fail('Internet/connection problem. Dobara try karein.'); }
+    catch (e2) { fail('Internet/connection problem. Please try again.'); }
   }
-  function okMsg(unsure) { st.className = 'stat ok'; st.textContent = '✓ Result sheet me save ho gaya' + (unsure ? ' (sent)' : '') + '. Aap ye window band kar sakte hain.'; }
+  function okMsg(unsure) { st.className = 'stat ok'; st.textContent = '✓ Result saved successfully' + (unsure ? ' (sent)' : '') + '. Please download your report below.'; }
   function fail(t) { st.className = 'stat bad'; st.textContent = '⚠ ' + t; rb.classList.remove('hidden'); }
+}
+
+// ===================== Personal PDF report (built on the student's own device; never uploaded) =====================
+function buildReport(STAT, T, tot, C, W, U) {
+  const max = Q.length * CFG.plus, att = C + W, acc = att ? Math.round(C * 100 / att) : 0;
+  const pc = (a, b) => b ? Math.round(a * 100 / b) : 0;
+  const lvl = p => p >= 70 ? ['Strong', '#16a34a'] : p >= 40 ? ['Improving', '#d97706'] : ['Focus area', '#0891b2'];
+  const subjQ = {}, topic = {};
+  for (const k in SUB) subjQ[k] = Q.filter(q => q.s === k).length;
+  Q.forEach((q, i) => {
+    const n = TOPIC_NAMES[TOPIC[i]] || 'General', t = topic[n] = topic[n] || { s: q.s, tot: 0, c: 0, w: 0, u: 0 };
+    t.tot++; t[STAT[i]]++;
+  });
+  const ks = Object.keys(SUB).sort((a, b) => T[b].m - T[a].m);
+  const best = ks[0], low = ks[ks.length - 1];
+  const R = 38, CI = 2 * Math.PI * R, ring = CI * Math.max(0, tot) / max;
+
+  const subjCards = Object.keys(SUB).map(k => {
+    const t = T[k], n = subjQ[k], p = pc(t.c, n), L = lvl(p);
+    const tag = k === best && t.m > 0 ? '⭐ Your strongest subject' : k === low && ks.length > 1 ? '🎯 Biggest room to grow' : '';
+    return '<div class="sc"><div class="sh"><b>' + SUB[k] + '</b><span style="background:' + L[1] + '">' + L[0] + '</span></div>' +
+      '<div class="sm">' + t.m + ' <small>marks</small></div>' +
+      '<div class="bar"><i style="width:' + pc(t.c, n) + '%;background:#16a34a"></i><i style="width:' + pc(t.w, n) + '%;background:#f59e0b"></i><i style="width:' + pc(t.u, n) + '%;background:#94a3b8"></i></div>' +
+      '<div class="lg2"><span><b style="color:#16a34a">' + t.c + '</b> correct</span><span><b style="color:#d97706">' + t.w + '</b> wrong</span><span><b style="color:#64748b">' + t.u + '</b> skipped</span></div>' +
+      '<div class="tg">' + tag + '&nbsp;</div></div>';
+  }).join('');
+
+  const tops = Object.entries(topic).map(([n, t]) => ({ ...t, name: n, p: pc(t.c, t.tot) }));
+  const topRows = Object.keys(SUB).map(k => '<div class="th">' + SUB[k] + '</div>' + tops.filter(t => t.s === k).sort((a, b) => b.p - a.p).map(t => {
+    const L = lvl(t.p);
+    return '<div class="tr"><span class="tn">' + t.name + '</span><span class="tb"><i style="width:' + Math.max(t.p, 3) + '%;background:' + L[1] + '"></i></span><span class="tp">' + t.c + '/' + t.tot + '</span></div>';
+  }).join('')).join('');
+
+  const kind = i => Q[i].t === 'n' ? 'n' : /Statement|Assertion/.test(Q[i].q) ? 's' : 'm';
+  const KN = { n: 'Numerical questions', s: 'Statement / Assertion–Reason questions', m: 'Concept-based MCQs' };
+  const KT = {
+    n: 'Write each step on paper and re-check units and the final arithmetic before entering the number.',
+    s: 'Judge each statement separately as true/false first, then choose the matching option — avoid deciding from just one statement.',
+    m: 'Revise the theory and standard results of the topics on the left, then practise 10 MCQs per topic.'
+  };
+  const pat = ['n', 's', 'm'].map(x => {
+    const idx = Q.map((_, i) => i).filter(i => kind(i) === x), w = idx.filter(i => STAT[i] === 'w').length, u = idx.filter(i => STAT[i] === 'u').length, c = idx.filter(i => STAT[i] === 'c').length;
+    if (!idx.length || w + u === 0) return '';
+    return '<div class="pt"><b>' + KN[x] + '</b> — ' + c + ' correct, ' + w + ' wrong, ' + u + ' skipped<br><span>' + KT[x] + '</span></div>';
+  }).join('') || '<div class="pt"><b>Excellent!</b> No mistakes to analyse.</div>';
+
+  const need = tops.filter(t => t.p < 70).sort((a, b) => a.p - b.p || b.tot - a.tot).slice(0, 3);
+  const strong = tops.filter(t => t.p >= 70).sort((a, b) => b.p - a.p).slice(0, 3);
+  const skipNote = U ? '<div class="pt"><b>' + U + ' skipped</b> — a skipped question is an opportunity, not a failure. Revisit them first (solutions are in this report) and practise answering within a time limit.</div>' : '';
+  const plan = (need.length ? '<ol>' + need.map(t => '<li><b>' + t.name + '</b> (' + SUB[t.s] + ') — ' + t.c + ' of ' + t.tot + ' correct. Re-read the concept notes, then solve the questions marked with this topic in the pages that follow.</li>').join('') + '</ol>' : '<p>You are strong in every topic — keep practising mixed full-length tests to stay sharp.</p>') +
+    (strong.length ? '<p class="ok">💪 Keep it up in: ' + strong.map(t => t.name).join(', ') + '.</p>' : '');
+
+  const first = '<div class="pg1">' +
+    '<div class="hd"><div><div class="ex">' + esc(CFG.examName) + ' • Personal Performance Report</div><h1>' + esc(ST.name) + '</h1><div class="sub">' + esc(ST.school) + ', ' + esc(ST.city) + ', ' + esc(ST.state) + '</div></div>' +
+    '<svg width="110" height="110" viewBox="0 0 100 100"><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#ffffff33" stroke-width="10"/><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#67e8f9" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + ring + ' ' + CI + '" transform="rotate(-90 50 50)"/><text x="50" y="49" text-anchor="middle" font-size="19" font-weight="800" fill="#fff">' + tot + '</text><text x="50" y="64" text-anchor="middle" font-size="10" fill="#cfe9f5">out of ' + max + '</text></svg></div>' +
+    '<div class="tiles"><div><b style="color:#16a34a">' + C + '</b>Correct</div><div><b style="color:#d97706">' + W + '</b>Wrong</div><div><b style="color:#64748b">' + U + '</b>Skipped</div><div><b style="color:#0891b2">' + acc + '%</b>Accuracy on attempted</div></div>' +
+    '<h2>Subject-wise snapshot</h2><div class="subs">' + subjCards + '</div>' +
+    '<div class="two"><div><h2>Topic strength <small>(correct / total)</small></h2>' + topRows + '</div>' +
+    '<div><h2>Where mistakes are happening</h2>' + pat + skipNote + '<h2>Your next steps</h2><div class="plan">' + plan + '</div></div></div>' +
+    '<div class="ft">This report was generated on your device for you only. It is not shared publicly. Every mistake shown here is simply a topic you now know how to improve — you can do it! 🚀</div></div>';
+
+  const miss = Q.map((_, i) => i).filter(i => STAT[i] !== 'c');
+  let body = '';
+  for (const k in SUB) {
+    const list = miss.filter(i => Q[i].s === k);
+    if (!list.length) continue;
+    body += '<h2 class="sj">' + SUB[k] + ' — ' + list.length + ' question' + (list.length > 1 ? 's' : '') + ' to review</h2>';
+    body += list.map(i => {
+      const q = Q[i], skipped = STAT[i] === 'u';
+      const given = skipped ? 'Not attempted' : q.t === 'm' ? 'ABCD'[ans[i]] + '. ' + q.o[ans[i]] : String(ans[i]);
+      const corr = q.t === 'm' ? 'ABCD'[q.a] + '. ' + q.o[q.a] : String(q.a);
+      const opts = q.t === 'm' ? '<div class="op">' + q.o.map((o, j) => '<div' + (j === q.a ? ' class="co"' : '') + '><b>' + 'ABCD'[j] + '</b> ' + o + '</div>').join('') + '</div>' : '';
+      const steps = (SOL[i] || 'Refer to your teacher for this solution.').split(' | ').map(s => '<li>' + s + '</li>').join('');
+      return '<div class="sol"><div class="sq"><b>Q' + (i + 1) + '</b> <span class="chip">' + (TOPIC_NAMES[TOPIC[i]] || '') + '</span> <span class="chip ' + (skipped ? 'sk' : 'wr') + '">' + (skipped ? 'Skipped' : 'Incorrect') + '</span></div>' +
+        '<div class="qt">' + q.q + q.f + '</div>' + opts +
+        '<div class="ans">Your answer: <b>' + esc(given).replace(/&lt;(\/?)(sub|sup)&gt;/g, '<$1$2>') + '</b> &nbsp;|&nbsp; Correct answer: <b class="g">' + corr + '</b></div>' +
+        '<div class="st"><b>Solution</b><ol>' + steps + '</ol></div></div>';
+    }).join('');
+  }
+  if (!miss.length) body = '<h2 class="sj">Perfect score!</h2><p>You answered every question correctly — there is nothing to review. Outstanding work!</p>';
+
+  const css = '<style>#rep{font-family:system-ui,Segoe UI,Roboto,sans-serif;color:#0b2545;font-size:11.5px;line-height:1.45;background:#fff}#rep *{box-sizing:border-box}' +
+    '#rep h1{margin:2px 0;font-size:24px;color:#fff}#rep h2{font-size:13px;margin:12px 0 6px;color:#0b2545;border-left:4px solid #06b6d4;padding-left:7px}#rep h2 small{font-weight:400;color:#64748b}' +
+    '#rep .hd{background:linear-gradient(135deg,#0b2545,#0e7490);color:#fff;border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}#rep .ex{font-size:10.5px;color:#a5e7f3;letter-spacing:.4px}#rep .sub{color:#cfe9f5;font-size:11.5px}' +
+    '#rep .tiles{display:flex;gap:8px;margin-top:10px}#rep .tiles div{flex:1;background:#f1f9fc;border-radius:10px;padding:8px;text-align:center;font-size:10px;color:#5a7291}#rep .tiles b{display:block;font-size:20px}' +
+    '#rep .subs{display:flex;gap:8px}#rep .sc{flex:1;border:1px solid #d6e8f0;border-radius:10px;padding:9px}#rep .sh{display:flex;justify-content:space-between;align-items:center}#rep .sh span{color:#fff;font-size:9.5px;padding:2px 8px;border-radius:10px}' +
+    '#rep .sm{font-size:22px;font-weight:800;color:#0e7490}#rep .sm small{font-size:10px;font-weight:400;color:#64748b}#rep .bar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:#e2eef5;margin:5px 0}#rep .bar i{display:block;height:100%}' +
+    '#rep .lg2{display:flex;justify-content:space-between;font-size:10px;color:#475569}#rep .tg{font-size:10px;color:#0e7490;font-weight:600;margin-top:4px;min-height:14px}' +
+    '#rep .two{display:flex;gap:14px}#rep .two>div{flex:1}#rep .th{font-size:10px;font-weight:700;color:#0e7490;margin:7px 0 2px;text-transform:uppercase;letter-spacing:.4px}' +
+    '#rep .tr{display:flex;align-items:center;gap:6px;margin:2px 0}#rep .tn{width:46%;font-size:10.5px}#rep .tb{flex:1;height:8px;background:#e2eef5;border-radius:4px;overflow:hidden}#rep .tb i{display:block;height:100%}#rep .tp{width:30px;text-align:right;font-size:10px;color:#475569}' +
+    '#rep .pt{background:#f1f9fc;border-radius:8px;padding:6px 9px;margin-bottom:5px;font-size:10.5px}#rep .pt span{color:#475569}#rep .plan ol{margin:0;padding-left:16px;font-size:10.5px}#rep .plan li{margin-bottom:3px}#rep .plan p{margin:4px 0;font-size:10.5px}#rep .ok{color:#15803d;font-weight:600}' +
+    '#rep .ft{margin-top:12px;text-align:center;font-size:10px;color:#64748b;border-top:1px solid #e2eef5;padding-top:7px}' +
+    '#rep .sj{font-size:15px;margin:6px 0 8px;background:#e0f7fb;padding:7px 10px;border-left:5px solid #06b6d4}' +
+    '#rep .sol{border:1px solid #d6e8f0;border-radius:10px;padding:10px 12px;margin-bottom:10px;page-break-inside:avoid}#rep .sq{margin-bottom:4px}#rep .chip{font-size:9.5px;background:#e2eef5;border-radius:8px;padding:1px 7px;margin-left:4px}#rep .chip.sk{background:#e2e8f0;color:#475569}#rep .chip.wr{background:#fef3c7;color:#92400e}' +
+    '#rep .qt{font-size:12px;margin:4px 0}#rep .fig{margin:6px 0;color:#0b2545}#rep .op{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:11px;margin:4px 0}#rep .op .co{color:#15803d;font-weight:700}' +
+    '#rep .ans{font-size:11px;margin:5px 0;color:#475569}#rep .g{color:#15803d}#rep .st{background:#f0fdf4;border-radius:8px;padding:6px 10px;font-size:11px}#rep .st ol{margin:3px 0 0;padding-left:18px}#rep .st li{margin-bottom:2px}</style>';
+
+  return css + first + '<div class="html2pdf__page-break"></div>' + '<h2 style="font-size:17px;margin:0 0 4px">Your Questions to Review — with Step-by-Step Solutions</h2><div style="font-size:10.5px;color:#64748b;margin-bottom:8px">Only the questions you got wrong or skipped are included. Work through them one by one — each one you master is marks gained in the next test.</div>' + body;
+}
+
+function makePDF() {
+  const st = $('pdfStat'), pb = $('prtBtn');
+  const set = (cls, t) => { st.className = 'stat ' + cls; st.textContent = t; };
+  if (typeof html2pdf === 'undefined') { set('bad', 'The PDF engine could not load (internet needed). Use the Print / Save as PDF button below.'); pb.classList.remove('hidden'); return; }
+  set('wait', 'Preparing your personal PDF report…');
+  const nm = ST.name.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'Student';
+  html2pdf().set({
+    margin: [8, 8, 10, 8], filename: 'JEE_Report_' + nm + '.pdf',
+    image: { type: 'jpeg', quality: 0.92 }, html2canvas: { scale: 1.6, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css', 'legacy'], avoid: ['.sol'] }
+  }).from($('rep')).save()
+    .then(() => set('ok', '✓ Your personal report has been downloaded (private to you).'))
+    .catch(() => { set('bad', 'Could not create the PDF automatically. Use the Print / Save as PDF button below.'); pb.classList.remove('hidden'); });
 }
 
 // ===================== Basic protection =====================
 addEventListener('beforeunload', e => { if (run) { e.preventDefault(); e.returnValue = ''; } });
 ['contextmenu', 'copy', 'cut', 'paste'].forEach(e => document.addEventListener(e, ev => { if (run) ev.preventDefault(); }));
 </script>
+
+<!-- ===== SOLUTIONS & TOPICS (used only for the student's personal PDF report; steps separated by " | ") ===== -->
+<script>
+const TOPIC_NAMES = { E: 'Elasticity', F: 'Fluid Mechanics', V: 'Surface Tension & Viscosity', X: 'Thermal Expansion', H: 'Heat Transfer & Radiation', K: 'Calorimetry & Thermometry', P: 'Periodic Properties', I: 'Ionic Equilibrium', Y: 'Chemical Equilibrium', c: 'Circles', s: 'Straight Lines', g: 'Triangles & Coordinate Geometry' };
+// one letter per question, Q1..Q75
+const TOPIC = ('EEEEVVFFFVXXHHHVVVEKFFKKK' + 'PPPPPPPPP' + 'IIIIIYIIYYYPYYII' + 'ccsgccccgggsssssccccccccg').split('');
+const SOL = [
+"Y = FL/(AΔL), A = πr², F = mg = 4×3.1π = 12.4π N. | Y = (12.4π×20)/(π×(2×10⁻³)²×0.031×10⁻³) = 248/(1.24×10⁻¹⁰) = 2×10¹² N/m².",
+"Each rope segment carries T = 10 kN/2 = 5 kN. | Extension = TL/(AY) with AY = 10³×10³ = 10⁶ N → 3 mm (600 mm part) and 4.5 mm (900 mm part). | The load moves down by the average = (3 + 4.5)/2 = 3.75 mm.",
+"Safe stress is fixed, so area ∝ load. | A₂ = 2.5×10⁻⁴ × (25/10) = 6.25×10⁻⁴ m².",
+"g′ = 10/4 = 2.5 m/s², so F = 4×2.5 = 10 N. | ΔL = FL/(AY) = 10×6/(3×10⁻⁶×2×10¹¹) = 10⁻⁴ m = 0.1 mm.",
+"At terminal speed net force is zero: mg = ku. | So u = mg/k.",
+"Area changes from 4πR² to N·4πr², with r = R/N^(1/3). | New area = 4πR²N^(1/3). | W = σΔA = 4πR²(N^(1/3) − 1)σ.",
+"Pressure at the interface level is the same on both sides. | The figure shows equal column heights above that level, so ρgh = ρwgh gives ρ = ρw.",
+"In the accelerating frame the horizontal liquid column of length L creates a pressure difference ρaL. | This equals ρgh, so h = La/g.",
+"The liquid surface is 3H above the ground. Hole at height x: v = √(2g(3H − x)), fall time t = √(2x/g). | R = 2√(x(3H − x)). | R is maximum when x = 3H − x, i.e. x = 1.5H.",
+"Energy gained = σ × increase in area. | 729 drops → r = R/9: ΔA = 4π(729r² − R²) = 4πR²(9 − 1) = 32π cm² ≈ 100.5 cm². | E = 75 × 100.5 ≈ 7.5×10³ erg = 7.5×10⁻⁴ J.",
+"On heating, every linear dimension expands, including the gap (like a hole in a plate). | So x, r and d all increase.",
+"Real expansion γ = γ(apparent) + γ(vessel). | Steel: γ = 144×10⁻⁶ + 3×12×10⁻⁶ = 180×10⁻⁶. | Glass: γg = 180 − 153 = 27×10⁻⁶ → αg = 9×10⁻⁶ /°C.",
+"Rate of cooling ∝ surface area / mass ∝ r²/r³. | So rate of cooling ∝ 1/r.",
+"Time ∝ thermal resistance. Series: 2R; parallel: R/2. | Ratio = (R/2)/(2R) = 1/4. | New time = 12/4 = 3 s.",
+"Wien's law: λT = constant, so T ∝ 1/λ → T′ = 4T/3. | Power ∝ T⁴ → (4/3)⁴ = 256/81.",
+"Capillary rise h = 2T cosθ/(rρg), so mass M = ρπr²h ∝ r. | Triple radius → mass becomes 3M.",
+"Terminal velocity v = 2r²(ρ − σ)g/(9η) ∝ r². | Ratio = 1² : 2² = 1 : 4.",
+"Capillary rise h ∝ 1/r for the same liquid and material. | r₁ : r₂ = h₂ : h₁ = 60 : 30 = 2 : 1.",
+"ΔL = FL/(πr²Y). F and Y are equal, so ΔL ∝ L/r². | L ratio 1 : 2 and r² ratio 1 : 2 → (1/1) : (2/2). | ΔL₁ : ΔL₂ = 1 : 1.",
+"Heat lost by water = heat gained by calorimeter. | 0.1×4200×(40 − T) = 100×(T − 30). | 16800 − 420T = 100T − 3000 → T = 19800/520 ≈ 38 °C.",
+"Force = rate of change of momentum = ρAv². | F = 1000 × (10×10⁻⁴) × 20² = 400 N.",
+"Continuity: A₁v₁ = A₂v₂ with A₁ = 2 cm² = 200 mm². | 200×4 = 10×v → v = 80 cm/s.",
+"Same fraction of the range on both scales. | (x − 20)/(150 − 20) = (60 − 0)/100. | x = 20 + 0.6×130 = 98 °C.",
+"Half of the kinetic energy heats the bullet: ½(½mv²) = mcΔT. | ΔT = v²/(4c) = 90000/(4×150) = 150 °C.",
+"Heat lost by ball = heat gained by water + vessel. | 10(T − 40) = 200×(40 − 10). | T − 40 = 600 → T = 640 °C.",
+"Z = 120 → configuration [Og] 8s². | Two electrons in the outermost s-orbital = group 2 → alkaline earth metal.",
+"Half-filled stability comes from symmetrical distribution, smaller coulombic repulsion, larger exchange energy and smaller mutual shielding: (a), (b), (d), (e). | (c) is wrong because the same-spin electrons sit in DEGENERATE orbitals, not non-degenerate ones.",
+"Second IE removes an electron from M⁺. | O⁺ = 2p³ (half-filled, very stable) → highest; then F⁺ (2p⁴), N⁺ (2p²), C⁺ (2p¹). | Order: O > F > N > C.",
+"Among B, C, N, O the first IE is highest for N. | Its 2p³ half-filled configuration is extra stable (oxygen dips due to pairing repulsion in 2p⁴).",
+"Mg²⁺ = 0, Ti³⁺ (3d¹) = 1, V³⁺ (3d²) = 2, Fe²⁺ (3d⁶) = 4 unpaired electrons. | Fe²⁺ has the maximum.",
+"Amphoteric oxides: Al₂O₃, ZnO, As₂O₃, PbO₂ = 4. | NO, N₂O and CO are neutral oxides.",
+"Electron gain enthalpy becomes less negative down the group: S > Se > Te. | Oxygen is the exception: its small size causes strong electron–electron repulsion, so it is lower than S, Se and Te here. | Order: S > Se > Te > O.",
+"These ions are isoelectronic (10 electrons). Size decreases as nuclear charge increases: O²⁻ > F⁻ > Na⁺ > Mg²⁺. | So 1.26 Å = O²⁻, 1.19 Å = F⁻, 1.16 Å = Na⁺, 0.72 Å = Mg²⁺. | P→2, Q→4, R→3, S→1.",
+"M → M³⁺ + 3e⁻ is the sum of the three ionisation steps. | x = IE₁ + IE₂ + IE₃ → IE₂ = x − y − z.",
+"10⁻⁸ M HCl is so dilute that water's own H⁺ (10⁻⁷) cannot be ignored. | [H⁺] ≈ 10⁻⁸ + 9.5×10⁻⁸ ≈ 1.05×10⁻⁷ M. | pH ≈ 6.98, i.e. between 6 and 7 (an acid can never give pH > 7).",
+"Pure water: [H⁺] = [OH⁻] = 10⁻⁶ M. | Kw = 10⁻⁶ × 10⁻⁶ = 10⁻¹².",
+"HCl is a strong acid (lowest pH); NH₄Cl is an acidic salt; NaCl is neutral; NaCN is a basic salt (CN⁻ hydrolyses). | HCl < NH₄Cl < NaCl < NaCN.",
+"Required [S²⁻] = Ksp/[M²⁺] with [M²⁺] = 10⁻³. | HgS needs only 10⁻⁵¹ M, the smallest, and 10⁻¹⁶ M is more than that. | HgS precipitates first.",
+"For NaX: Kh = Kw/Ka = 10⁻¹⁴/10⁻⁵ = 10⁻⁹. | h = √(Kh/C) = √(10⁻⁹/0.1) = 10⁻⁴. | h = 0.01%.",
+"Overall formation constant = K₁ × K₂. | = 5×10⁻³ × 3×10⁻³ = 15×10⁻⁶.",
+"Dissociation of water is endothermic, so Kw rises with temperature, [H⁺] increases and pH decreases. | Assertion (pH increases) is false and Reason (exothermic) is false. | Both are false.",
+"Methyl orange is a weak BASE, not an acid → Statement-I is incorrect. | The quinonoid form is the deeper (red) coloured form → Statement-II is incorrect. | Both are incorrect.",
+"A large Kc only shows the extent of reaction, not its speed. | A catalyst is still needed to reach equilibrium at a practical rate (V₂O₅ in the contact process). | The other three statements are correct (Δn < 0, exothermic, inert gas at constant volume).",
+"Adding Xe at constant T and P increases the volume, like lowering the pressure. | The reaction shifts to the side with more moles (forward). | More PCl₅ dissociates, so the amount of PCl₃ increases.",
+"Kc = [products]/[reactants], each raised to its stoichiometric coefficient. | Kc = [FeSCN²⁺] / ([Fe³⁺][SCN⁻]).",
+"Positive electron gain enthalpy: N (half-filled 2p), Be and Mg (filled s), He (noble gas). | Cl, S and F have negative values. | Count = 4.",
+"CO₂ + C ⇌ 2CO: P(CO₂) = 0.5 − x, P(CO) = 2x. | Total = 0.5 + x = 0.6 → x = 0.1. | Kp = (0.2)²/0.4 = 0.1 → ×10 = 1.",
+"n(total) = PV/RT = 2.46×200/(0.082×600) = 10 mol. | 7 + x = 10 → x = 3: PCl₅ 2, PCl₃ 3, Cl₂ 3, N₂ 2 mol. | Kp = (0.3×2.46)²/(0.2×2.46) = 0.738²/0.492 = 1.107 = 1107×10⁻³.",
+"At pH 7: Ksp = S² = (10⁻⁴)² = 10⁻⁸. | At pH 2: S = 10⁻³, so [X⁻] = Ksp/S = 10⁻⁵ and [HX] ≈ 10⁻³. | Ka = [H⁺][X⁻]/[HX] = 10⁻²×10⁻⁵/10⁻³ = 10⁻⁴ → pKa = 4.",
+"Acetic acid = 3/60 = 0.05 mol; HCl = 0.1×0.25 = 0.025 mol in 500 mL. | In 20 mL: HCl 0.001 mol, CH₃COOH 0.002 mol; NaOH = 0.5 mL × 5 M = 0.0025 mol. | 0.001 neutralises HCl; the remaining 0.0015 converts acid to acetate: acid 0.0005, salt 0.0015. | pH = 4.70 + log 3 = 4.70 + 0.50 = 5.2 → ×10 = 52.",
+"S-I: the smaller part is x − 2y > 1 (origin gives 0 < 1). Only (2, 1/3) satisfies it inside the circle → 1 point ✓. | S-II: need 2a + 1 > 3 (a > 1) and a² + (a+1)² < 9 → a² + a − 4 < 0 → a < (√17 − 1)/2 ✓. | Both are true.",
+"Let the mid-point be (x₁, y₁). Chord of contact from (h, k): hx + ky = 4, and this chord has equation xx₁ + yy₁ = x₁² + y₁². | So h = 4x₁/(x₁²+y₁²), k = 4y₁/(x₁²+y₁²). | Put in 3h + 4k = 12 → 3(x² + y²) = 3x + 4y.",
+"S-I: move along (1, 1): (2+t, 1+t) on 2x + 3y = 12 → 5t = 5 → t = 1 → distance √2 ✓. | S-II: need a² − a + 2 > 0 (always) and a² + a − 2 < 0 → a ∈ (−2, 1) ✓. | Both are true.",
+"S-I: area(ABC) = 6, area(APB) = 2 → BP = 2 → P = (0, 0). Triangle A, P, C has area ½×4×2 = 4 ✓. | S-II: vertices (0,0), (6,0), (3,6) → centroid (3, 2). α + 2β = 7 and 2α − β = 4 → roots of x² − 11x + 28 = 0 ✓. | Both are true.",
+"Centre (3, −2), r² = 13 − k. | To lie in the 4th quadrant r < 2 → k > 9. (2, −1) on/inside: k − 11 ≤ 0 → k ≤ 11. | k ∈ (9, 11].",
+"Centre C(1, 2), r = 3, PC = 5 → tangent length = 4. | AB = 2×(4×3)/5 = 24/5 and distance of P from AB = 16/5 → area = ½×24/5×16/5 = 192/25 ✓. | Circumcircle has PC as diameter: (x−4)(x−1) + (y−6)(y−2) = 0 → x² + y² − 5x − 8y + 16 = 0 ✓. | Both are true.",
+"S-I: the circle has diameter from the origin to (p, q). A chord to (−p, 2t − q) with mid-point (0, t) gives 4t² − 6qt + 2p² + 2q² = 0. | Two real chords need D > 0 → q² > 8p² (not p² > 8q²), so S-I is false. | S-II: centres (2,3), (8,11), radii 5 and 5, distance 10 = r₁ + r₂ → exactly 3 common tangents ✓.",
+"Family S₁ + λS₂ = 0 has centre (2/(1+λ), 3λ/(1+λ)). | Put in 2x + 2y = 7 → λ = −3 → circle x² + y² + 2x − 9y = 0. | Only (−2, 9) satisfies it.",
+"S-I: right angle at Q, so orthocentre = Q(0,0); circumcentre = mid-point of PR = (2, 1.5); distance = 5/2 ✓. | S-II: the triangle with those mid-points has vertices (0,0), (4,0), (0,4); inradius = 4 − 2√2, so incentre coordinate sum = 8 − 4√2 ≠ 4 → false.",
+"Circumcentre on the y-axis with OA = OC gives α² + 4/3 = (α√3 − 2/√3)² → α = 2. | The triangle is equilateral with side 4. | Perimeter = 12 (area 4√3, R = 4/√3, r = 2/√3).",
+"S-I: G = ((2cosθ + 2sinθ + 1)/3, (2sinθ − 2cosθ − 2)/3). | (3x − 1)² + (3y + 2)² = 8 → 3(x² + y²) − 2x + 4y − 1 = 0 ✓. | S-II: 2a = 6 → a = 3, c = 2, b² = 5 → a² + b² = 14 ✓. | Both are true.",
+"S-I: trisection points of the intercept (3,0)–(0,2) are (2, 2/3) and (1, 4/3) → m₁ + m₂ = 1/3 + 4/3 = 5/3. | y = 5x/3 meets L at (6/7, 10/7), and y − 2x = −2/7 ≠ 2 → false. | S-II: lines at 45° to slope 2 have slopes −3 and 1/3, so 3x − y − 1 = 0 (slope 3) is not valid → false. | Both are false.",
+"S-I: point (2+s, 3+s) on 3x + 4y + 2 = 0 → s = −20/7 → PQ = √2 × 20/7 = 20√2/7 ✓. | S-II: (2 + √2cosθ, 1 + √2sinθ) on x + y = 4 → cosθ + sinθ = 1/√2 → sin(θ + 45°) = 1/2, which is impossible for 0° < θ < 90° → false.",
+"Vertices: (−4, −6), (8/3, 2/3), (0, 2). The triangle meets the x-axis for −1 ≤ x ≤ 2 and the y-axis for −2 ≤ y ≤ 2. | Maximum PQ² = α² + β² = 4 + 4 = 8 (e.g. (2,0) and (0,2)). | (α ∈ [−1, 2], β ∈ [−2, 2], 8).",
+"Slopes: mirror 2, reflected 3, incident m. Equal angles: (2 − m)/(1 + 2m) = (3 − 2)/(1 + 6) = 1/7 → m = 13/9. | Incident line through (0, 2): 13x − 9y + 18 = 0. | X-intercepts −18/13 and −2/3 → base 28/39, height 2 → Δ = 28/39.",
+"4a² + 25b² − 20ab = (2a − 5b)² = 9c² → 2a − 5b = ±3c. | The lines pass through P₁(−2/3, 5/3) and P₂(2/3, −5/3). | P₁P₂ has slope −5/2, so the perpendicular through the origin is y = 2x/5, i.e. 2x − 5y = 0.",
+"S-I: x = 1 meets the circle at (1, ±√3); each point makes 60° with the x-axis → angle = 120° = 2π/3 ✓. | S-II: reflect B in the x-axis → B′(4, −2); AB′ cuts y = 0 at M(2, 0). Reflection of M in y = x is (0, 2) ✓. | Both are true.",
+"S-I: chord of contact of (h, k) for x² + y² = 8 is hx + ky = 8; comparing with x + 2y = 4 gives (2, 4) ✓. | S-II: circles touching at the origin: x² + y² + λ(4x − 3y) = 0. Through (−1, 2): 5 − 10λ = 0 → λ = ½ → x² + y² + 2x − 1.5y = 0, not 15x − 3y → false.",
+"S-I: x² + y² − 4x + 3 = 0 is a circle with centre (2, 0) and r = 1; max/min of x² + y² = (2 ± 1)² = 9 and 1 → M + m = 10 ✓. | S-II: centre (c, c), distance to 4x + 3y = 12 equals c: |7c − 12|/5 = c → c = 6 or 1 → c can be 6 ✓. | Both are true.",
+"S-I: circle x² + y² + 2gx + 2fy + c = 0. The common chord with x² + y² = 4 passes through the origin → c = −4; with the second circle it passes through (1, −3) → 2g − 6f + 15 = 0. Centre (−g, −f): 2x − 6y − 15 = 0 ✓. | S-II: mid-points of chords from the origin lie on the circle with diameter OC, C = (0, 1): x² + y² − y = 0 ✓. | Both are true.",
+"Centre (5, k), radius |k|. y-intercept: 2√(k² − 25) = 2√11 → k² = 36 → k = ±6. | Centres (5, 6) and (5, −6). | S = 5 + 6 + 5 − 6 = 10.",
+"A chord bisected at P has slope −6/k (OP ⊥ chord), and P must lie inside the circle: 36 + k² < 50 → |k| ≤ 3. | Slope integral and k ≠ 0 → k = ±1, ±2, ±3. | 6 values.",
+"Distance of the centre from the line = 5/√5 = √5. | Chord length 2√(r² − 5) = √2·r → 4(r² − 5) = 2r². | r² = 10.",
+"Centre (2, 3), r = 2. Two distinct points: |6 + 12 − k|/5 < 2 → |18 − k| < 10. | 8 < k < 28 → integers 9 to 27. | Count = 19.",
+"AB has slope −1, so CP ⊥ AB gives β = α. AP has slope −1/2, so BC has slope 2: (α − 4) = 2(α + 2) → α = β = −8. | Centroid of PAB = (2/3, 2/3) → h + k = 4/3. | |(−16) + 9×(4/3)| = |−16 + 12| = 4."
+];
+</script>
+
 </body>
 </html>
