@@ -8,26 +8,43 @@
 :root{--n9:#061a33;--n8:#0b2545;--c5:#06b6d4;--c3:#67e8f9;--bg:#f1f9fc;--mut:#5a7291;--ok:#16a34a;--bad:#dc2626;--mk:#7c3aed}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--n8);user-select:none;-webkit-user-select:none}
+input{user-select:text;-webkit-user-select:text}
 .hidden{display:none!important}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(6,26,51,.15);padding:28px;max-width:600px;width:100%}
+.card{background:#fff;border-radius:16px;box-shadow:0 8px 30px rgba(6,26,51,.15);padding:28px;max-width:640px;width:100%}
 h1{margin:0 0 4px;font-size:24px}h2{margin:0 0 10px;font-size:19px}h4{margin:14px 0 6px;font-size:13px;color:var(--mut)}
 ul{padding-left:18px;line-height:1.65;font-size:14px;color:#33496a}
 .btn{border:0;border-radius:10px;padding:11px 18px;font-weight:700;font-size:14px;cursor:pointer;background:var(--c5);color:var(--n9)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.sec{background:#e2eef5;color:var(--n8)}.btn.red{background:var(--bad);color:#fff}
+.fld{position:relative;margin:10px 0}
+.fld label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin-bottom:4px}
+.fld input{width:100%;padding:11px 12px;border:2px solid #d6e8f0;border-radius:10px;font-size:15px;color:var(--n8);outline:0;background:#fff}
+.fld input:focus{border-color:var(--c5)}
+.sgb{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #cfe3ec;border-radius:10px;box-shadow:0 8px 24px rgba(6,26,51,.18);z-index:20;max-height:230px;overflow:auto;margin-top:2px}
+.sg{padding:9px 12px;cursor:pointer;font-size:14px}.sg:hover,.sg.on{background:#e0f7fb}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin:6px 0}
+.hint{font-size:11px;color:var(--mut);margin-top:3px}
 header{background:var(--n8);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 18px}
+header small{color:#9fb6d3}
 .timer{font:700 22px ui-monospace,Consolas,monospace;color:var(--c3)}.timer.low{color:#fca5a5}
 .tabs{display:flex;gap:8px;padding:10px 18px;background:#fff;border-bottom:1px solid #d6e8f0}
 .tab{border:1px solid #cfe3ec;background:#fff;border-radius:20px;padding:6px 16px;font-weight:600;cursor:pointer;color:var(--n8)}
 .tab.on{background:var(--c5);border-color:var(--c5);color:var(--n9)}
-.main{display:grid;grid-template-columns:1fr 290px;gap:16px;padding:16px 18px}
+.main{display:grid;grid-template-columns:1fr 310px;gap:16px;padding:16px 18px}
 .q{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(6,26,51,.08)}
-.qh{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);font-weight:600;margin-bottom:10px}
-#qtext{font-size:18px;line-height:1.55;margin:0 0 16px}
-.opt{display:block;width:100%;text-align:left;background:#f6fbfd;border:2px solid #d6e8f0;border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:16px;cursor:pointer;color:var(--n8)}
+.qh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--mut);font-weight:600;margin-bottom:10px}
+#qtext{font-size:17px;line-height:1.6;margin:0 0 14px}
+#qtext .fig{margin:10px 0;color:var(--n8)}
+.opt{display:block;width:100%;text-align:left;background:#f6fbfd;border:2px solid #d6e8f0;border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:16px;cursor:pointer;color:var(--n8)}
 .opt b{display:inline-block;width:26px;color:var(--c5)}.opt.sel{border-color:var(--c5);background:#e0f7fb}
+.numbox{max-width:300px}
+#num{width:100%;font-size:22px;padding:10px 12px;border:2px solid var(--c5);border-radius:10px;text-align:right;font-family:ui-monospace,Consolas,monospace;color:var(--n8)}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.kp button{padding:11px 0;font-size:17px;font-weight:700;border:1px solid #cbd9e2;background:#eef3f6;border-radius:8px;cursor:pointer;color:var(--n8)}
 .nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-aside{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(6,26,51,.08);align-self:start}
+aside{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(6,26,51,.08);align-self:start;max-height:calc(100vh - 130px);overflow:auto}
 .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .pb{border:1px solid #cbd9e2;background:#eef3f6;border-radius:8px;height:36px;font-weight:700;cursor:pointer;color:var(--n8);display:inline-block;min-width:36px;text-align:center;line-height:34px}
 .pb.a{background:var(--ok);color:#fff;border-color:var(--ok)}.pb.v{background:var(--bad);color:#fff;border-color:var(--bad)}
@@ -37,24 +54,37 @@ aside{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba
 .box{background:#fff;border-radius:16px;padding:28px;max-width:440px;width:100%;text-align:center}
 .big{font-size:68px;font-weight:800;color:var(--bad);line-height:1.1;margin:6px 0 14px}
 table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}th,td{padding:8px;border-bottom:1px solid #e1edf3;text-align:center}th:first-child,td:first-child{text-align:left}
+.mt td,.mt th{border:1px solid #cfe3ec;padding:5px 10px;text-align:left}
 .score{font-size:44px;font-weight:800;color:var(--c5)}
 details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid #e1edf3;line-height:1.5}
 .g{color:var(--ok);font-weight:700}.r{color:var(--bad);font-weight:700}
-@media(max-width:820px){.main{grid-template-columns:1fr}}
+.stat{padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;margin:10px 0}
+.stat.ok{background:#dcfce7;color:#166534}.stat.bad{background:#fee2e2;color:#991b1b}.stat.wait{background:#e0f2fe;color:#075985}
+@media(max-width:820px){.main{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<!-- ===== Start screen: student details ===== -->
 <div id="start" class="center"><div class="card">
   <h1>JEE Main Mock Test</h1>
   <p style="margin:0 0 8px;color:var(--mut)">Physics • Chemistry • Mathematics</p>
+  <div class="fld"><label>STUDENT NAME</label><input id="fName" placeholder="Apna poora naam likhein" maxlength="60" autocomplete="off"></div>
+  <div class="row2">
+    <div class="fld"><label>STATE</label><input id="fState" placeholder="Type karke select karein" autocomplete="off"><div class="sgb hidden" id="sState"></div></div>
+    <div class="fld"><label>CITY</label><input id="fCity" placeholder="Pehle state select karein" autocomplete="off"><div class="sgb hidden" id="sCity"></div></div>
+  </div>
+  <div class="fld"><label>SCHOOL NAME</label><input id="fSchool" placeholder="School ka naam type karein" autocomplete="off"><div class="sgb hidden" id="sSchool"></div>
+    <div class="hint">List me school na mile to poora naam khud type karein — wo agli baar suggestion me aa jayega.</div></div>
+  <div class="err" id="fErr"></div>
   <ul id="rules"></ul>
   <button class="btn" id="go" style="width:100%;margin-top:10px;font-size:16px">START EXAM</button>
 </div></div>
 
+<!-- ===== Exam ===== -->
 <div id="exam" class="hidden">
   <header>
-    <b>JEE Main Mock Test</b>
+    <div><b>JEE Main Mock Test</b><br><small id="who"></small></div>
     <span id="viol">Warnings: 0</span>
     <span class="timer" id="timer">00:00:00</span>
     <button class="btn red" id="subBtn">Submit Paper</button>
@@ -63,7 +93,7 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
   <div class="main">
     <section class="q">
       <div class="qh"><span id="qno"></span><span id="qsub"></span></div>
-      <p id="qtext"></p>
+      <div id="qtext"></div>
       <div id="opts"></div>
       <div class="nav">
         <button class="btn sec" id="prev">Previous</button>
@@ -90,125 +120,308 @@ details{margin-top:12px;font-size:14px}.rv{padding:8px 0;border-bottom:1px solid
 </div></div>
 
 <script>
-// ===== Settings (change freely) =====
-const CFG = { minutes: 60, grace: 15, final: 10, plus: 4, minus: 1, perSubject: 5 };  // perSubject = questions picked per subject each attempt
-
-// ===== Question BANK: every attempt picks CFG.perSubject random questions per subject from here and shuffles the options.
-// Add more objects in the same format (s = P / C / M, a = index of correct option 0-3). Avoid options like "Both A and B". =====
+// ===================== SETTINGS =====================
+const CFG = {
+  examName: 'UT-04 (31/10/26)',
+  minutes: 180,
+  grace: 10,      // Warning 1: itne second me wapas aana hai
+  final: 5,       // Warning 2: itne second baad auto-submit
+  plus: 4, minus: 1,
+  numMinus: 1,    // Numerical galat jawab pe minus marks (0 kar do agar negative nahi chahiye)
+  sheetURL: 'https://script.google.com/macros/s/AKfycbyniEd_4CxPjJ7AwQyBQVUVVexIAJiMY_Czl5tzFHo1vURLcv8b06Bsh4a6uAAs6W9Yxw/exec'   // <-- Code.gs deploy karke yahan paste karein
+};
 const SUB = { P: 'Physics', C: 'Chemistry', M: 'Mathematics' };
-const BANK = [
- {s:'P',q:'A ball is thrown vertically upwards with a speed of 20 m/s. Taking g = 10 m/s², the maximum height reached is',o:['10 m','20 m','30 m','40 m'],a:1},
- {s:'P',q:'The dimensional formula of Planck’s constant h is',o:['ML²T⁻¹','ML²T⁻²','MLT⁻¹','ML⁻¹T'],a:0},
- {s:'P',q:'Two resistors of 6 Ω and 3 Ω are connected in parallel. The equivalent resistance is',o:['9 Ω','2 Ω','1.5 Ω','4.5 Ω'],a:1},
- {s:'P',q:'A body of mass 2 kg is moving with a speed of 3 m/s. Its kinetic energy is',o:['3 J','6 J','9 J','18 J'],a:2},
- {s:'P',q:'A simple pendulum of length 1 m is placed where g = π² m/s². Its time period is',o:['1 s','2 s','π s','2π s'],a:1},
- {s:'C',q:'The number of unpaired electrons in a phosphorus atom (Z = 15) in its ground state is',o:['1','2','3','5'],a:2},
- {s:'C',q:'The pH of a 0.01 M aqueous solution of HCl is',o:['1','2','3','12'],a:1},
- {s:'C',q:'The hybridisation of carbon atoms in ethyne (C₂H₂) is',o:['sp','sp²','sp³','sp³d'],a:0},
- {s:'C',q:'The number of moles present in 36 g of water (molar mass 18 g/mol) is',o:['1','2','3','4'],a:1},
- {s:'C',q:'The IUPAC name of CH₃–CH₂–CH₂–OH is',o:['Propan-2-ol','Propanal','Propan-1-ol','Propanone'],a:2},
- {s:'M',q:'If f(x) = x², then the value of f′(3) is',o:['3','6','9','12'],a:1},
- {s:'M',q:'The value of ∫₀^π sin x dx is',o:['0','1','2','π'],a:2},
- {s:'M',q:'Two fair coins are tossed. The probability of getting at least one head is',o:['1/4','1/2','3/4','1'],a:2},
- {s:'M',q:'The determinant of the matrix [[1, 2], [3, 4]] is',o:['−2','2','10','−10'],a:0},
- {s:'M',q:'The sum of the roots of the equation 2x² − 7x + 3 = 0 is',o:['3/2','7/2','−7/2','2/7'],a:1},
- {s:'P',q:'A car accelerates uniformly from rest to 20 m/s in 5 s. Its acceleration is',o:['2 m/s²','4 m/s²','5 m/s²','10 m/s²'],a:1},
- {s:'P',q:'The SI unit of capacitance is',o:['Henry','Farad','Tesla','Weber'],a:1},
- {s:'P',q:'A force of 10 N acts on a body of mass 2 kg. The acceleration produced is',o:['2 m/s²','5 m/s²','10 m/s²','20 m/s²'],a:1},
- {s:'P',q:'The speed of light in a medium of refractive index 1.5 is (c = 3 × 10⁸ m/s)',o:['1.5 × 10⁸ m/s','2 × 10⁸ m/s','3 × 10⁸ m/s','4.5 × 10⁸ m/s'],a:1},
- {s:'P',q:'A wire of resistance 10 Ω carries a current of 2 A. The heat produced per second is',o:['20 J','40 J','5 J','80 J'],a:1},
- {s:'P',q:'A wave has wavelength 2 m and speed 340 m/s. Its frequency is',o:['170 Hz','680 Hz','340 Hz','85 Hz'],a:0},
- {s:'P',q:'The work done by a constant force of 5 N in moving a body 4 m along the direction of the force is',o:['9 J','20 J','1.25 J','40 J'],a:1},
- {s:'P',q:'Which of the following is a vector quantity?',o:['Mass','Temperature','Displacement','Time'],a:2},
- {s:'P',q:'The pressure due to water alone at a depth of 10 m is (ρ = 1000 kg/m³, g = 10 m/s²)',o:['10³ Pa','10⁴ Pa','10⁵ Pa','10⁶ Pa'],a:2},
- {s:'P',q:'The power of a convex lens of focal length 20 cm is',o:['+5 D','+0.5 D','+20 D','−5 D'],a:0},
- {s:'C',q:'Which of the following is a noble gas?',o:['Nitrogen','Oxygen','Argon','Chlorine'],a:2},
- {s:'C',q:'The molecular formula of glucose is',o:['C₆H₁₂O₆','C₁₂H₂₂O₁₁','C₆H₆','CH₃COOH'],a:0},
- {s:'C',q:'The oxidation state of manganese in KMnO₄ is',o:['+2','+4','+6','+7'],a:3},
- {s:'C',q:'Which element has the highest electronegativity?',o:['Chlorine','Fluorine','Oxygen','Nitrogen'],a:1},
- {s:'C',q:'The total number of σ bonds in an ethene (C₂H₄) molecule is',o:['4','5','6','3'],a:1},
- {s:'C',q:'The approximate value of Avogadro’s number is',o:['6.022 × 10²³','6.022 × 10²⁰','3.011 × 10²³','1.6 × 10⁻¹⁹'],a:0},
- {s:'C',q:'The gas evolved when zinc reacts with dilute hydrochloric acid is',o:['Oxygen','Chlorine','Hydrogen','Carbon dioxide'],a:2},
- {s:'C',q:'The shape of the NH₃ molecule is',o:['Linear','Trigonal planar','Trigonal pyramidal','Tetrahedral'],a:2},
- {s:'C',q:'Which of the following is an amphoteric oxide?',o:['Na₂O','Al₂O₃','CO₂','MgO'],a:1},
- {s:'C',q:'The pH of pure water at 25 °C is',o:['0','1','7','14'],a:2},
- {s:'M',q:'The value of sin 30° is',o:['√3/2','1/2','1','1/√2'],a:1},
- {s:'M',q:'If A = {1, 2, 3} and B = {2, 3, 4}, then n(A ∪ B) is',o:['2','3','4','6'],a:2},
- {s:'M',q:'The derivative of ln x with respect to x is',o:['x','1/x','ln x','eˣ'],a:1},
- {s:'M',q:'The sum of the first 10 natural numbers is',o:['45','50','55','100'],a:2},
- {s:'M',q:'The distance between the points (0, 0) and (3, 4) is',o:['3','4','5','7'],a:2},
- {s:'M',q:'The value of ∫₀³ 2x dx is',o:['3','6','9','18'],a:2},
- {s:'M',q:'If log₁₀ x = 2, then x equals',o:['20','100','1000','2'],a:1},
- {s:'M',q:'The number of ways of arranging 3 distinct books on a shelf is',o:['3','6','9','27'],a:1},
- {s:'M',q:'The modulus of the complex number 1 + i is',o:['1','√2','2','0'],a:1},
- {s:'M',q:'The common difference of the A.P. 5, 8, 11, 14, … is',o:['2','3','4','5'],a:1}
-];
 
-// Build this attempt's paper: random questions per subject + shuffled options (new paper on every reload)
-const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// ===================== QUESTIONS (75) =====================
+//==QDATA START
 const Q = [];
-for (const k in SUB) {
-  shuffle(BANK.filter(x => x.s === k)).slice(0, CFG.perSubject).forEach(x => {
-    const ord = shuffle(x.o.map((_, i) => i));
-    Q.push({ s: k, q: x.q, o: ord.map(i => x.o[i]), a: ord.indexOf(x.a) });
-  });
-}
+const mc = (s, q, o, a, f) => Q.push({ s, t: 'm', q, o, a, f: f || '' });
+const nm = (s, q, a, f) => Q.push({ s, t: 'n', q, a, f: f || '' });
+const S12 = ['Both Statement-I and Statement-II are true', 'Both Statement-I and Statement-II are false', 'Statement-I is true but Statement-II is false', 'Statement-I is false but Statement-II is true'];
+const S12n = ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'];
+const TF = ['Both statements are TRUE', 'Both statements are FALSE', 'I is TRUE and II is FALSE', 'I is FALSE and II is TRUE'];
 
+// ---------- Figures ----------
+const svg = (w, h, body) => '<div class="fig"><svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" style="max-width:100%;height:auto" fill="none" stroke="currentColor" stroke-width="2" font-family="system-ui,sans-serif" font-size="13">' + body + '</svg></div>';
+const FIG2 = svg(260, 270,
+  '<path d="M40 60h60M140 20h60" stroke-dasharray="3 3"/><path d="M70 60v90M170 20v130"/><circle cx="120" cy="150" r="50"/><circle cx="120" cy="150" r="4" fill="currentColor"/>' +
+  '<path d="M120 150v55"/><rect x="90" y="205" width="60" height="30" fill="#e0f7fb"/><text x="120" y="225" text-anchor="middle" stroke="none" fill="currentColor">10 kN</text>' +
+  '<text x="10" y="110" stroke="none" fill="currentColor">600 mm</text><text x="182" y="90" stroke="none" fill="currentColor">900 mm</text>');
+const FIG7 = svg(220, 190,
+  '<path d="M40 10v150h110V10M80 10v110h30V10"/><path d="M40 160h110" stroke-width="3"/>' +
+  '<rect x="41" y="40" width="39" height="119" fill="#bae6fd" stroke="none"/><rect x="80" y="120" width="30" height="39" fill="#bae6fd" stroke="none"/><rect x="110" y="40" width="39" height="119" fill="#94a3b8" stroke="none"/><rect x="41" y="40" width="108" height="0"/>' +
+  '<path d="M20 40h150" stroke-dasharray="4 3"/><text x="52" y="100" stroke="none" fill="currentColor">ρw</text><text x="123" y="100" stroke="none" fill="currentColor">ρ</text>' +
+  '<path d="M170 160v-39M165 124l5-5 5 5M165 157l5 5 5-5" /><text x="176" y="146" stroke="none" fill="currentColor">2 cm</text>');
+const FIG8 = svg(260, 200,
+  '<path d="M40 10v140h160V10M80 10v110h80V10"/><rect x="41" y="40" width="39" height="109" fill="#bae6fd" stroke="none"/><rect x="80" y="120" width="80" height="29" fill="#bae6fd" stroke="none"/><rect x="161" y="70" width="39" height="79" fill="#bae6fd" stroke="none"/>' +
+  '<path d="M40 175h160M40 168v14M200 168v14"/><text x="112" y="193" stroke="none" fill="currentColor">L</text><path d="M215 90h35M243 84l7 6-7 6"/><text x="228" y="80" stroke="none" fill="currentColor" font-style="italic">a</text>');
+const FIG9 = svg(280, 220,
+  '<rect x="40" y="20" width="50" height="100" fill="#bae6fd"/><path d="M20 120h120v14H20z" fill="#cbd5e1"/><path d="M60 134v66M100 134v66"/><path d="M10 200h250"/>' +
+  '<path d="M92 135C140 130 170 160 180 198" stroke-dasharray="4 3"/><path d="M200 30v168M195 36l5-6 5 6M195 192l5 6 5-6"/><text x="210" y="120" stroke="none" fill="currentColor">x</text>' +
+  '<text x="6" y="75" stroke="none" fill="currentColor">2H</text><text x="146" y="170" stroke="none" fill="currentColor">H</text><path d="M110 212h70M118 207l-6 5 6 5M172 207l6 5-6 5"/><text x="140" y="210" stroke="none" fill="currentColor" dy="-4">R</text>');
+const FIG11 = svg(220, 200,
+  '<path d="M96 28A70 70 0 1 0 124 28" stroke-width="14" stroke="#7dd3fc"/><circle cx="110" cy="100" r="3" fill="currentColor"/><path d="M110 100l-61 35" stroke-width="1.5"/>' +
+  '<text x="70" y="108" stroke="none" fill="currentColor" font-style="italic">r</text><text x="104" y="14" stroke="none" fill="currentColor" font-style="italic">x</text><path d="M92 20h36" stroke-width="1.5"/><text x="116" y="196" stroke="none" fill="currentColor" font-style="italic">d</text>');
+const FIG22 = svg(340, 120,
+  '<path d="M60 30h130c30 0 40 22 70 22h70M60 90h130c30 0 40-22 70-22h70" /><rect x="50" y="26" width="14" height="68" fill="#e0f7fb"/><path d="M20 60h30M42 54l8 6-8 6"/><text x="12" y="48" stroke="none" fill="currentColor">piston</text><text x="262" y="100" stroke="none" fill="currentColor">outlet</text>');
+
+// ---------- PHYSICS (Q1-25) ----------
+mc('P', 'A load of 4 kg is suspended from a ceiling through a steel wire of length 20 m and radius 2 mm. It is found that the length of the wire increases by 0.031 mm, as equilibrium is achieved. If g = 3.1π m s⁻², the value of Young\'s modulus of the material of the wire (in N m⁻²) is', ['2×10¹²', '4×10¹¹', '2×10¹¹', '0.02×10⁹'], 0);
+mc('P', 'A load of 10 kN is supported from a pulley, which in turn is supported by a rope of cross-sectional area 10³ mm² and modulus of elasticity 10³ N mm⁻² as shown in the figure. Neglecting friction at the pulley, then downward deflection of the load (in mm) is', ['3.75', '4.25', '2.75', '4.00'], 0, FIG2);
+mc('P', 'The area of cross section of the rope used to lift a load by a crane is 2.5×10⁻⁴ m². The maximum lifting capacity of the crane is 10 metric tons. To increase the lifting capacity of the crane to 25 metric tons, the required area of cross section of the rope should be: (take g = 10 m s⁻²)', ['6.25×10⁻⁴ m²', '10×10⁻⁴ m²', '1×10⁻⁴ m²', '1.67×10⁻⁴ m²'], 0);
+mc('P', 'The Young\'s modulus of a steel wire of length 6 m and cross-sectional area 3 mm² is 2×10¹¹ N/m². The wire is suspended from its support on a given planet. A block of mass 4 kg is attached to the free end of the wire. The acceleration due to gravity on the planet is ¼ of its value on the earth. The elongation of wire is (Take g on the earth = 10 m/s²):', ['0.1 cm', '1 cm', '0.1 mm', '1 mm'], 2);
+mc('P', 'A small ball (mass m) falling under gravity in a viscous medium experience a drag force proportional to the instantaneous speed u such that F<sub>drag</sub> = ku. Then the terminal speed of ball within viscous medium is (Ignore force of buoyancy)', ['k/(mg)', 'mg/k', '√(mg/k)', 'None of these'], 1);
+mc('P', 'The work done to split a liquid drop of radius R into N identical drops is (take σ as the surface tension of the liquid)', ['4πR²(N<sup>1/3</sup> − 1)σ', '4πR²Nσ', '4πR²(N<sup>1/2</sup> − 1)σ', 'None of these'], 0);
+mc('P', 'The figure represents a U-tube of uniform cross-section filled with two immiscible liquids. One is water with density ρ<sub>w</sub> and the other liquid is of density ρ. The liquid interface lies 2 cm above the base. The relation between ρ and ρ<sub>w</sub> is', ['ρ = ρ<sub>w</sub>', 'ρ = 1.02 ρ<sub>w</sub>', 'ρ = 1.2 ρ<sub>w</sub>', 'None of these'], 0, FIG7);
+mc('P', 'A liquid stands at the plane level in the U-tube when at rest. If areas of cross-section of both the limbs are equal, what will be the difference in heights h of the liquid in the two limbs of U-tube, when the system is given an acceleration a in horizontal direction towards right as shown?', ['Lg/a', 'La/g', 'Lg²/a²', 'zero'], 1, FIG8);
+mc('P', 'A tank is filled up to a height 2H with a liquid and is placed on a platform of height H from the ground. The distance x from the ground where a small hole is punched to get the maximum range R is', ['H', '1.25 H', '1.5 H', '2 H'], 2, FIG9);
+mc('P', 'A water drop of radius 1 cm is broken into 729 equal droplets. If surface tension of water is 75 dyne/cm, then the gain in surface energy will be: (Given π = 3.14)', ['8.5×10⁻⁴ J', '8.2×10⁻⁴ J', '7.5×10⁻⁴ J', '5.3×10⁻⁴ J'], 2);
+mc('P', 'A cylindrical metal rod of length L₀ is shaped into a ring with a small gap as shown. On heating the system:', ['x decreases, r and d increase', 'x and r increase, d decreases', 'x, r and d all increase', 'Data is insufficient to arrive at a conclusion'], 2, FIG11);
+mc('P', 'The coefficient of apparent expansion of mercury in a glass vessel is 153×10⁻⁶ /°C and that in a steel vessel is 144×10⁻⁶ /°C. If α for steel is 12×10⁻⁶ /°C, then that of glass is', ['9×10⁻⁶ /°C', '6×10⁻⁶ /°C', '36×10⁻⁶ /°C', '27×10⁻⁶ /°C'], 0);
+mc('P', 'A hot metallic sphere of radius r radiates heat. Its rate of cooling is', ['independent of r', 'proportional to r', 'proportional to r²', 'proportional to 1/r'], 3);
+mc('P', 'Two rods of same length and material transfer a given amount of heat in 12 seconds, when they are joined end to end. But when they are joined along their lengths, then they will transfer same heat in same conditions in', ['24 s', '3 s', '1.5 s', '48 s'], 1);
+mc('P', 'The energy spectrum of a black body exhibits maximum energy around a wavelength λ₀. The temperature of the black body is now changed such that the energy is maximum around a wavelength 3λ₀/4. The power radiated by the black body will now increase by a factor of', ['256/81', '64/27', '16/9', '4/3'], 0);
+mc('P', 'When a capillary tube is immersed in a liquid, then liquid of mass M rises in the capillary tube. If capillary tube of triple radius is taken the mass of liquid rising in tube is', ['M/2', '2M', 'M/3', '3M'], 3);
+mc('P', 'Two balls of same material whose radii are in the ratio of 1 : 2 falls in a liquid. The ratio of their terminal velocities is given by', ['2 : 3', '1 : 4', '3 : 2', '5 : 9'], 1);
+mc('P', 'Water rises in the two capillaries of same material up to height of 30 and 60 mm. The ratio of the radii of the capillaries is (Assume h ≫ r)', ['2 : 1', '3 : 5', '5 : 4', '4 : 7'], 0);
+mc('P', 'Two wires of the same material have lengths in the ratio 1 : 2 and their radii are in the ratio 1 : √2. If they are stretched by applying equal forces, the increase in their lengths will be in the ratio', ['√2 : 2', '2 : √2', '1 : 1', '1 : 2'], 2);
+mc('P', 'A calorimeter of heat capacity 100 J/K is at room temperature of 30 °C. 100 g of water at 40 °C of specific heat 4200 J/kg-K is poured into calorimeter. The final temperature of water in calorimeter is', ['30 °C', '42 °C', '38.0 °C', '20.6 °C'], 2);
+nm('P', 'A pressure-pump has a horizontal tube of cross sectional area 10 cm² for the outflow of water at a speed of 20 m/s. The force [in N] exerted on the vertical wall just in front of the tube which stops water horizontally flowing out of the tube, is : [given: density of water = 1000 kg/m³]', 400);
+nm('P', 'Figure below shows a liquid being pushed out of the tube by a piston having area of cross section 2.0 cm². The area of cross section at the outlet is 10 mm². If the piston is pushed at a speed of 4 cm s⁻¹ the speed of outgoing fluid is _______ (in cm s⁻¹)', 80, FIG22);
+nm('P', 'If a thermometer reads freezing point of water as 20 °C and boiling point as 150 °C, how much thermometer would read when the actual temperature is 60 °C?', 98);
+nm('P', 'A lead bullet of 10 g travelling at 300 m/s strikes against a block of wood and comes to rest. Assuming 50% of heat is absorbed by the bullet, the increase in its temperature is [in °C] (Specific heat of lead = 150 J/kg-K)', 150);
+nm('P', 'A ball of thermal capacity 10 cal/°C is heated to the temperature of furnace. It is then transferred into a vessel containing water. The water equivalent of vessel and the contents is 200 g. The temperature of the vessel and its contents rise from 10 °C to 40 °C. What is the temperature of furnace? [in °C]', 640);
+
+// ---------- CHEMISTRY (Q26-50) ----------
+mc('C', 'The element with Z = 120 (not yet discovered) will be an/a', ['Inner transition metal', 'Alkaline earth metal', 'Alkali metal', 'Transition metal'], 1);
+mc('C', 'The extra stability of half-filled subshell is due to:<br>(a) Symmetrical distribution of electrons<br>(b) Smaller coulombic repulsion energy<br>(c) The presence of electrons with the same spin in non-degenerate orbitals<br>(d) Larger exchange energy<br>(e) Relatively smaller shielding of electrons by one another<br>Identify the correct statements', ['(b), (d) and (e) only', '(a), (b), (d) and (e) only', '(b), (c) and (d) only', '(a), (b) and (d) only'], 1);
+mc('C', 'The correct order of second ionisation potential of carbon, nitrogen, oxygen and fluorine is', ['C&gt;N&gt;O&gt;F', 'O&gt;N&gt;F&gt;C', 'O&gt;F&gt;N&gt;C', 'F&gt;O&gt;N&gt;C'], 2);
+mc('C', 'The element with the highest first ionisation potential is', ['boron', 'carbon', 'nitrogen', 'oxygen'], 2);
+mc('C', 'Which of the following has the maximum number of unpaired electrons ?', ['Mg²⁺', 'Ti³⁺', 'V³⁺', 'Fe²⁺'], 3);
+mc('C', 'How many of the following are amphoteric oxide:<br>Al₂O₃, ZnO, As₂O₃, PbO₂, NO, N₂O, CO', ['4', '6', '7', '8'], 0);
+mc('C', 'The correct order of electron gain enthalpy is:', ['S&gt;Se&gt;Te&gt;O', 'O&gt;S&gt;Se&gt;Te', 'Te&gt;Se&gt;S&gt;O', 'S&gt;O&gt;Se&gt;Te'], 0);
+mc('C', 'Match the species with their respective ionic size.<table class="mt" style="width:auto;margin:8px 0"><tr><th>Column – I</th><th>Column – II</th></tr><tr><td>(P) Mg²⁺</td><td>(1) 1.19 Å</td></tr><tr><td>(Q) O²⁻</td><td>(2) 0.72 Å</td></tr><tr><td>(R) Na⁺</td><td>(3) 1.16 Å</td></tr><tr><td>(S) F⁻</td><td>(4) 1.26 Å</td></tr></table>', ['P→3, Q→1, R→2, S→4', 'P→2, Q→4, R→1, S→3', 'P→2, Q→4, R→3, S→1', 'P→4, Q→2, R→3, S→1'], 2);
+mc('C', 'From the given information of element M:<br>M → M³⁺ + 3e⁻ &nbsp; ΔH = x kJ/mole<br>IE₁(M) = y kJ/mole<br>IE₃(M) = z kJ/mole<br>The value of IE₂(M) will be', ['(x + y + z) kJ/mole', '(x − y − z) kJ/mole', '(x − y + z) kJ/mole', 'z − (x + y) kJ/mole'], 1);
+mc('C', 'The pH of 10⁻⁸ M solution of HCl in water is', ['8', '−8', 'Between 7 and 8', 'Between 6 and 7'], 3);
+mc('C', 'At 90 °C, pure water has [H₃O⁺] as 10⁻⁶ mol L⁻¹. What is the value of K<sub>w</sub> at 90 °C?', ['10⁻⁶', '10⁻¹²', '10⁻¹⁴', '10⁻⁸'], 1);
+mc('C', 'The pH of 0.1 M solution of the following salts increases in the order', ['NaCl &lt; NH₄Cl &lt; NaCN &lt; HCl', 'HCl &lt; NH₄Cl &lt; NaCl &lt; NaCN', 'NaCN &lt; NH₄Cl &lt; NaCl &lt; HCl', 'HCl &lt; NaCl &lt; NaCN &lt; NH₄Cl'], 1);
+mc('C', 'A solution which is 10⁻³ M each in Mn²⁺, Fe²⁺, Zn²⁺ and Hg²⁺ is treated with 10⁻¹⁶ M sulphide ion. If K<sub>sp</sub> of MnS, FeS, ZnS and HgS are 10⁻¹⁵, 10⁻²³, 10⁻²⁰ and 10⁻⁵⁴ respectively, which one will precipitate first ?', ['FeS', 'MnS', 'HgS', 'ZnS'], 2);
+mc('C', 'HX is a weak acid [K<sub>a</sub> = 10⁻⁵]. It forms a salt NaX (0.1 M) on reacting with caustic soda. The degree of hydrolysis of NaX is', ['0.01%', '0.0001%', '0.1%', '0.5%'], 0);
+mc('C', 'Ag⁺ + NH₃ ⇌ [Ag(NH₃)]⁺; K₁ = 5×10⁻³<br>[Ag(NH₃)]⁺ + NH₃ ⇌ [Ag(NH₃)₂]⁺; K₂ = 3×10⁻³<br>Then the formation constant of [Ag(NH₃)₂]⁺ is?', ['15×10⁻⁶', '15×10⁶', '15×10⁻⁹', 'None of these'], 0);
+mc('C', 'For the following Assertion and Reason, the correct option is:<br>Assertion (A): The pH of water increases with increase in temperature.<br>Reason (R): The dissociation of water into H⁺ and OH⁻ is an exothermic reaction.', ['Assertion is not true, but reason is true', 'Both assertion and reason are false', 'Both assertion and reason are true but the reason is not the correct explanation for the assertion', 'Both assertion and reason are true, and the reason is the correct explanation for the assertion'], 1);
+mc('C', 'Given below are two statements:<br>Statement-I: Methyl orange is a weak acid.<br>Statement-II: The benzenoid form of methyl orange is more intense/deeply coloured than the quinonoid form.<br>In the light of the above statements, choose the most appropriate answer from the options given below:', ['Statement-I is correct but Statement-II is incorrect.', 'Statement-I is incorrect but Statement-II is correct.', 'Both Statement-I and Statement-II are incorrect.', 'Both Statement-I and Statement-II are correct.'], 2);
+mc('C', 'For the reaction, 2SO₂(g) + O₂(g) ⇌ 2SO₃(g), ΔH = −57.2 kJ mol⁻¹ and K<sub>c</sub> = 1.7×10¹⁶. Which of the following statement is INCORRECT ?', ['The equilibrium constant is large suggestive of reaction going to completion and so no catalyst is required.', 'The equilibrium will shift in forward direction as the pressure increases.', 'The equilibrium constant decreases as the temperature increases.', 'The addition of an inert gas at constant volume will not affect the equilibrium constant.'], 0);
+mc('C', 'In the following system, PCl₅(g) ⇌ PCl₃(g) + Cl₂(g) at equilibrium, upon addition of xenon gas at constant T &amp; P, the concentration of', ['PCl₅ will increase', 'Cl₂ will decrease', 'PCl₅, PCl₃ &amp; Cl₂ remain constant', 'PCl₃ will increase'], 3);
+mc('C', 'For the given reaction, choose the correct expression of K<sub>c</sub> from the following:<br>Fe³⁺(aq) + SCN⁻(aq) ⇌ (FeSCN)²⁺(aq)', ['K<sub>c</sub> = [(FeSCN)²⁺] / ([Fe³⁺][SCN⁻])', 'K<sub>c</sub> = [Fe³⁺][SCN⁻] / [FeSCN²⁺]', 'K<sub>c</sub> = 1', 'K<sub>c</sub> is not defined'], 0);
+nm('C', 'How many of the following have positive electron gain enthalpy:<br>N, Cl, S, F, He, Be, Mg', 4);
+nm('C', 'A vessel at 1000 K contains CO₂ with a pressure of 0.5 atm. Some of CO₂ is converted into CO on addition of graphite. If total pressure at equilibrium is 0.6 atm, then K<sub>p</sub> is: (Report your answer multiplied by 10)', 1);
+nm('C', 'PCl₅ dissociates as PCl₅(g) ⇌ PCl₃(g) + Cl₂(g). 5 moles of PCl₅ are placed in a 200 litre vessel which contains 2 moles of N₂ and is maintained at 600 K. The equilibrium pressure is 2.46 atm. The equilibrium constant K<sub>p</sub> for the dissociation of PCl₅ is ……… × 10⁻³ (nearest integer). (Given R = 0.082 L atm K⁻¹ mol⁻¹; assume ideal gas behaviour)', 1107);
+nm('C', 'On decreasing the pH from 7 to 2, the solubility of a sparingly soluble salt (MX) of a weak acid (HX) increased from 10⁻⁴ mol L⁻¹ to 10⁻³ mol L⁻¹. The pK<sub>a</sub> of HX is:', 4);
+nm('C', '3 g of acetic acid is added to 250 mL of 0.1 M HCl and the solution made up to 500 mL. To 20 mL of this solution ½ mL of 5 M NaOH is added. The pH of the solution is ……… [Given: pKa of acetic acid = 4.70, molar mass of acetic acid = 60 g/mol, log 3 = 0.50] [Report your answer × 10] Neglect any changes in volume.', 52);
+
+// ---------- MATHEMATICS (Q51-75) ----------
+mc('M', 'Statement I: The straight line x − 2y = 1 divides the circular region x² + y² ≤ 5 into two parts. If S = {(2, 1), (2, 1/3), (−1, −1), (1/2, −1/4)}, then the number of point(s) in S strictly lying inside the smaller part is 1.<br>Statement II: Values of a for which the point (a, a + 1) lies strictly in the region bounded by the circle x² + y² = 9 and the line x + y = 3 in the first quadrant is a ∈ (1, (√17 − 1)/2).', S12, 0);
+mc('M', 'The locus of the mid-point of the chord of contact of tangents drawn from points lying on the straight line 3x + 4y = 12 to the circle x² + y² = 4 is:', ['3(x²+y²) − 3x − 4y = 0', '3(x²+y²) + 3x + 4y = 0', '4(x²+y²) − 3x − 4y = 0', '12(x²+y²) − 4x − 3y = 0'], 0);
+mc('M', 'Statement-I: The distance of the point (2, 1) from the line 2x + 3y − 12 = 0, measured parallel to the line x − y + 1 = 0, is equal to √2.<br>Statement-II: Let R be the interior region between the lines x − y + 2 = 0 and x + y − 2 = 0 containing the origin. The set of all real values of a for which the point (a², a) lies inside R is (−2, 1).<br>In the light of the above statements, choose the correct answer:', S12, 0);
+mc('M', 'Statement-I: Let A(1, 2), B(−2, 0) and C(4, 0) be the vertices of a triangle ABC. If P is a point on side BC such that the ratio of the areas of ΔAPB and ΔABC is 1 : 3, then the area enclosed by the lines AP, AC and the x-axis is 4.<br>Statement-II: Let (α, β) be the centroid of the triangle formed by the lines 2x − y = 0, 2x + y = 12 and y = 0. Then α + 2β and 2α − β are the roots of the quadratic equation x² − 11x + 28 = 0.<br>In the light of the above statements, choose the correct answer:', S12, 0);
+mc('M', 'The set of values of k for which the circle C: x² + y² − 6x + 4y + k = 0 lies inside the fourth quadrant and the point (2, −1) lies on or inside the circle C is:', ['(4, 11]', '(9, 11]', '[9, 13)', 'An empty set'], 1);
+mc('M', 'Consider a circle S: x² + y² − 2x − 4y − 4 = 0 and an external point P(4, 6). Tangents are drawn from P to touch the circle at points A and B.<br>Statement-1: The area of the triangle PAB is equal to 192/25.<br>Statement-2: The equation of the circumcircle of ΔPAB is given by x² + y² − 5x − 8y + 16 = 0.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 0);
+mc('M', 'Statement-1: If two distinct chords drawn from the point (p, q) on the circle x² + y² = px + qy (where pq ≠ 0) are bisected by the Y-axis, then the parameters must satisfy the condition p² &gt; 8q².<br>Statement-2: The number of common tangents to the two circles x² + y² − 4x − 6y − 12 = 0 and x² + y² − 16x − 22y + 160 = 0 is exactly 3.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 2);
+mc('M', 'The circle passing through the points of intersection of the circles x² + y² − 4x = 0 and x² + y² − 6y = 0, and having its centre on the line 2x + 2y − 7 = 0, also passes through the point.', ['(−2, 9)', '(2, 9)', '(0, 1)', '(1, 0)'], 0);
+mc('M', 'Statement-1: For a triangle with vertices P(4, 0), Q(0, 0) and R(0, 3), the distance between its orthocentre and circumcentre is equal to 5/2.<br>Statement-2: The sum of x and y-coordinate of the incentre of a triangle whose side midpoints are located at (0, 2), (2, 2) and (2, 0) is equal to 4.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 1);
+mc('M', 'Let A(−α, 0), B(α, 0) and C(0, α√3) be the vertices of a triangle ABC in the upper half-plane. If (0, 2/√3) is the circumcentre of ΔABC, then which of the following is correct about ΔABC?', ['area is 12√3', 'perimeter is 12', 'circumradius is 4', 'inradius is 2'], 1);
+mc('M', 'Statement-1: If A(2cosθ, 2sinθ), B(2sinθ, −2cosθ) and C(1, −2) are the vertices of a ΔABC, then as θ varies, the locus of its centroid is given by the circle 3(x² + y²) − 2x + 4y − 1 = 0.<br>Statement-2: If a variable point P moves such that the sum of its distances from two fixed points A(2, 0) and B(−2, 0) is always 6, then the locus of P is an ellipse of the form x²/a² + y²/b² = 1, where the numerical value of (a² + b²) is equal to 14.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 0);
+mc('M', 'Statement-1: The straight lines l₁ and l₂ pass through the origin and trisect the intercept segment of the line L: 2x + 3y = 6 between the axes. If m₁ and m₂ are the slopes of l₁ and l₂, then the point of intersection of the line y = (m₁ + m₂)x with L lies on the line y − 2x = 2.<br>Statement-2: The equation of one of the straight lines passing through the point (1, 2) and making an angle of tan⁻¹(1) with the line y = 2x + 1 is given by 3x − y − 1 = 0.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 3);
+mc('M', 'Statement-1: If a straight line drawn through the point P(2, 3) makes an angle of π/4 with the positive direction of the x-axis and meets the line 3x + 4y + 2 = 0 at Q, then the length PQ is equal to 20√2/7.<br>Statement-2: The direction θ (where 0° &lt; θ &lt; 90°) in which a straight line must be drawn through the point (2, 1) so that its point of intersection with the line x + y = 4 is at a distance of √2 from this point is 75°.<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 1);
+mc('M', 'A triangle ABC is formed by the intersection of three straight lines: L₁: x − y − 2 = 0, L₂: 2x − y + 2 = 0, L₃: x + 2y − 4 = 0. Two variable points P(α, 0) and Q(0, β) always lie on or inside the boundary of ΔABC. If the maximum possible value of the squared distance PQ² between these two points is M, then the ordered triplet (α range, β range, M) is:', ['(α ∈ [−1, 2], β ∈ [−2, 4], 20)', '(α ∈ [−1, 2], β ∈ [−2, 2], 8)', '(α ∈ [−2, 2], β ∈ [−2, 2], 20)', '(α ∈ [−1, 2], β ∈ [−2, 4], 8)'], 1);
+mc('M', 'A ray of light traveling in a plane is incident along a straight line towards a flat mirror represented by the line L<sub>M</sub>: 2x − y + 2 = 0. The ray strikes the mirror at the point P(0, 2) and is then reflected along the line L<sub>R</sub>: 3x − y + 2 = 0. If the equation of the line of incidence is ax + by + c = 0 (where a, b, c are coprime integers and a &gt; 0), and the area of the triangle formed by the incident ray, the reflected ray, and the X-axis (y = 0) is Δ, then the ordered pair (Line of Incidence, Δ) is:', ['(13x + 9y − 18 = 0, 14/39)', '(13x − 9y + 18 = 0, 28/39)', '(9x − 13y + 26 = 0, 28/39)', '(13x − 9y + 18 = 0, 14/13)'], 1);
+mc('M', 'Let a, b, c be non-zero real numbers satisfying the algebraic relation: 4a² + 25b² − 20ab − 9c² = 0. If the set of two variable straight lines L: ax + by + c = 0 always passes through distinct fixed points P₁ and P₂, let S be the circle described on P₁P₂ as a diameter. Which of the following statements is CORRECT ?', ['The length of the intercept made by the circle S on the line y = x is √29 units.', 'The line passing through the origin perpendicular to P₁P₂ has the equation 2x − 5y = 0.', 'The radius of the circle S is exactly √29/9 units.', 'The area of the circle S is 29π/3 square units.'], 1);
+mc('M', 'Statement-1: The angle subtended by the straight lines joining the origin to the common points of intersection of the circle x² + y² − 4x = 0 and the straight line x = 1 is equal to 2π/3.<br>Statement-2: Consider two points A(1, 1) and B(4, 2). If M is a variable point on the X-axis (y = 0) such that the sum of distances AM + BM is minimized, then the reflection of M in the line y = x is given by the coordinates (0, 2).<br>Choose the correct option:', ['Both Statement-1 and Statement-2 are true.', 'Statement-1 is true, but Statement-2 is false.', 'Statement-1 is false, but Statement-2 is true.', 'Both Statement-1 and Statement-2 are false.'], 0);
+mc('M', 'Statement I: Tangents are drawn to the circle x² + y² = 8 at the points where the line x + 2y = 4 intersects the circle; then the coordinates of the point of intersection of the tangents is (2, 4).<br>Statement II: The equation of the circle which passes through the point (−1, 2) and touches the circle x² + y² − 8x + 6y = 0 at origin is x² + y² + 15x − 3y = 0.', TF, 2);
+mc('M', 'Statement I: Let x and y be the real numbers satisfying the equation x² − 4x + y² + 3 = 0. If the maximum and minimum values of x² + y² are M and m respectively, then the numerical value of (M + m) is 10.<br>Statement II: The equation of the circle which touches both the axes and the line x/3 + y/4 = 1 and lies in the first quadrant is (x − c)² + (y − c)² = c², then c can be 6.', TF, 0);
+mc('M', 'Statement I: The locus of the centre of circles which bisect the circumference of the circles x² + y² = 4 and x² + y² − 2x + 6y + 1 = 0 is 2x − 6y − 15 = 0.<br>Statement II: From origin, chords are drawn to the circle x² + y² − 2y = 0. The locus of the middle points of these chords is x² + y² − y = 0.', TF, 0);
+nm('M', 'Circle(s) touching the positive x-axis at a distance 5 from the origin and having an intercept of length 2√11 on the y-axis are drawn. If S is the sum of the x-coordinates and y-coordinates of the centers of all such possible circles, then the value of S is:', 10);
+nm('M', 'The number of integral values of k for which the chord of the circle x² + y² = 50 passing through P(6, k) gets bisected at P(6, k) and has an integral slope is', 6);
+nm('M', 'If the length of the chord of the circle x² + y² = r² (r &gt; 0) along the line 2x − y = 5 is √2 r, then r² is equal to:', 10);
+nm('M', 'The number of integral values of k for which the line 3x + 4y = k intersects the circle x² + y² − 4x − 6y + 9 = 0 at two distinct points is:', 19);
+nm('M', 'Two vertices of a triangle ABC are A(4, −2) and B(−2, 4), and its orthocentre is P(0, 0). If the coordinates of the point C are (α, β) and the centroid of the triangle PAB is (h, k), then the absolute value of (α + β) + 9(h + k) equals:', 4);
+//==QDATA END
+
+// ===================== SCHOOL DATA (State -> Cities) =====================
+const STATES = {
+ 'Andhra Pradesh':'Visakhapatnam,Vijayawada,Guntur,Nellore,Tirupati,Kurnool,Rajahmundry,Kakinada,Anantapur,Kadapa,Eluru,Ongole',
+ 'Arunachal Pradesh':'Itanagar,Naharlagun,Pasighat,Tawang,Ziro,Bomdila',
+ 'Assam':'Guwahati,Silchar,Dibrugarh,Jorhat,Nagaon,Tinsukia,Tezpur,Bongaigaon',
+ 'Bihar':'Patna,Gaya,Bhagalpur,Muzaffarpur,Darbhanga,Purnia,Arrah,Begusarai,Munger,Samastipur',
+ 'Chhattisgarh':'Raipur,Bhilai,Bilaspur,Korba,Durg,Rajnandgaon,Raigarh,Jagdalpur',
+ 'Goa':'Panaji,Margao,Vasco da Gama,Mapusa,Ponda',
+ 'Gujarat':'Ahmedabad,Surat,Vadodara,Rajkot,Bhavnagar,Jamnagar,Junagadh,Gandhinagar,Anand,Nadiad,Morbi,Mehsana,Bhuj,Porbandar,Surendranagar,Amreli,Navsari,Valsad,Vapi,Bharuch,Godhra,Palanpur,Patan,Gondal,Jetpur,Dwarka,Ishwariya,Kalavad,Dhoraji,Botad,Veraval,Himmatnagar,Ankleshwar,Dahod,Modasa',
+ 'Haryana':'Gurugram,Faridabad,Panipat,Ambala,Rohtak,Hisar,Karnal,Sonipat,Yamunanagar,Bhiwani,Kurukshetra,Sirsa',
+ 'Himachal Pradesh':'Shimla,Dharamshala,Solan,Mandi,Kullu,Bilaspur,Hamirpur,Una,Kangra',
+ 'Jharkhand':'Ranchi,Jamshedpur,Dhanbad,Bokaro,Hazaribagh,Deoghar,Giridih',
+ 'Karnataka':'Bengaluru,Mysuru,Hubballi,Mangaluru,Belagavi,Kalaburagi,Davanagere,Ballari,Shivamogga,Tumakuru,Udupi,Dharwad,Vijayapura',
+ 'Kerala':'Thiruvananthapuram,Kochi,Kozhikode,Thrissur,Kollam,Kannur,Alappuzha,Palakkad,Kottayam,Malappuram',
+ 'Madhya Pradesh':'Bhopal,Indore,Gwalior,Jabalpur,Ujjain,Sagar,Rewa,Satna,Dewas,Ratlam,Chhindwara,Khandwa',
+ 'Maharashtra':'Mumbai,Pune,Nagpur,Nashik,Thane,Chhatrapati Sambhajinagar,Solapur,Kolhapur,Amravati,Nanded,Latur,Sangli,Jalgaon,Akola,Navi Mumbai,Pimpri-Chinchwad',
+ 'Manipur':'Imphal,Thoubal,Churachandpur,Bishnupur',
+ 'Meghalaya':'Shillong,Tura,Jowai',
+ 'Mizoram':'Aizawl,Lunglei,Champhai',
+ 'Nagaland':'Kohima,Dimapur,Mokokchung',
+ 'Odisha':'Bhubaneswar,Cuttack,Rourkela,Berhampur,Sambalpur,Puri,Balasore,Bhadrak',
+ 'Punjab':'Ludhiana,Amritsar,Jalandhar,Patiala,Bathinda,Mohali,Hoshiarpur,Pathankot,Moga',
+ 'Rajasthan':'Jaipur,Jodhpur,Kota,Udaipur,Ajmer,Bikaner,Alwar,Sikar,Bhilwara,Sri Ganganagar,Pali,Jhunjhunu',
+ 'Sikkim':'Gangtok,Namchi,Gyalshing',
+ 'Tamil Nadu':'Chennai,Coimbatore,Madurai,Tiruchirappalli,Salem,Tirunelveli,Erode,Vellore,Thoothukudi,Namakkal,Tiruppur,Thanjavur',
+ 'Telangana':'Hyderabad,Secunderabad,Warangal,Nizamabad,Karimnagar,Khammam,Nalgonda,Mahbubnagar',
+ 'Tripura':'Agartala,Udaipur,Dharmanagar',
+ 'Uttar Pradesh':'Lucknow,Kanpur,Varanasi,Prayagraj,Agra,Meerut,Ghaziabad,Noida,Gorakhpur,Bareilly,Aligarh,Moradabad,Mathura,Jhansi,Saharanpur,Firozabad',
+ 'Uttarakhand':'Dehradun,Haridwar,Roorkee,Haldwani,Rudrapur,Nainital,Rishikesh',
+ 'West Bengal':'Kolkata,Howrah,Durgapur,Asansol,Siliguri,Bardhaman,Kharagpur,Malda',
+ 'Andaman and Nicobar Islands':'Port Blair',
+ 'Chandigarh':'Chandigarh',
+ 'Dadra and Nagar Haveli and Daman and Diu':'Daman,Silvassa,Diu',
+ 'Delhi':'New Delhi,Delhi,Dwarka,Rohini,Pitampura,Laxmi Nagar,Vasant Kunj',
+ 'Jammu and Kashmir':'Srinagar,Jammu,Anantnag,Baramulla,Udhampur',
+ 'Ladakh':'Leh,Kargil',
+ 'Lakshadweep':'Kavaratti',
+ 'Puducherry':'Puducherry,Karaikal,Yanam,Mahe'
+};
+const GENERIC_SCHOOLS = ['Kendriya Vidyalaya','Jawahar Navodaya Vidyalaya','Delhi Public School','DAV Public School','Sarvodaya Vidyalaya','Government Higher Secondary School','St. Xavier\'s High School','Modi School','Navrachana School','Podar International School'];
+let SERVER_SCHOOLS = [];   // Sheet se aayi hui schools list [{state,city,school}]
+
+// ===================== HELPERS =====================
 const $ = id => document.getElementById(id);
-let ans = Q.map(() => -1), seen = Q.map(() => false), mk = Q.map(() => false);
-let cur = 0, run = false, endAt = 0, viol = 0, vN = 0, ac, beepT, tickT;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ST = { name: '', state: '', city: '', school: '' };
+let ans = Q.map(q => q.t === 'm' ? -1 : ''), seen = Q.map(() => false), mk = Q.map(() => false);
+let cur = 0, run = false, endAt = 0, startAt = 0, viol = 0, vN = 0, ac, beepT, tickT, lastPayload = null;
+const isAns = i => Q[i].t === 'm' ? ans[i] >= 0 : String(ans[i]).trim() !== '';
 
 $('rules').innerHTML =
-  '<li>' + Q.length + ' questions • ' + CFG.minutes + ' minutes • +' + CFG.plus + ' for correct, −' + CFG.minus + ' for wrong</li>' +
-  '<li>Every attempt has a <b>fresh, random set of questions</b>.</li>' +
-  '<li>Clicking <b>Start Exam</b> starts the timer and switches your screen to <b>full screen</b>.</li>' +
-  '<li>If you leave the exam screen (exit full screen, switch tab or window), an <b>alarm</b> will sound.</li>' +
-  '<li>You get <b>' + CFG.grace + ' seconds</b> to come back. Otherwise a warning appears and the paper is <b>auto-submitted after ' + CFG.final + ' more seconds</b>.</li>';
+  '<li><b>' + Q.length + ' questions</b> • ' + CFG.minutes + ' minutes • Physics, Chemistry, Maths (har subject me 20 MCQ + 5 Numerical)</li>' +
+  '<li>Sahi jawab: <b>+' + CFG.plus + '</b> • MCQ galat: <b>−' + CFG.minus + '</b> • Numerical galat: <b>−' + CFG.numMinus + '</b></li>' +
+  '<li><b>Start Exam</b> dabate hi timer shuru hoga aur screen <b>full screen</b> ho jayegi.</li>' +
+  '<li>Exam screen chhodne par (full screen exit, tab/window switch) <b>alarm</b> bajega.</li>' +
+  '<li><b>Warning 1:</b> ' + CFG.grace + ' second me wapas aayein. Nahi aaye to <b>Warning 2:</b> ' + CFG.final + ' second ka countdown, uske baad paper <b>auto-submit</b>.</li>';
 
-// ===== Paper UI =====
+// ===================== Smart suggest =====================
+function suggest(inp, box, getList, onPick) {
+  let idx = -1, items = [];
+  const show = () => {
+    const v = inp.value.trim().toLowerCase();
+    items = getList().filter(x => !v || x.toLowerCase().includes(v))
+      .sort((a, b) => (a.toLowerCase().startsWith(v) ? 0 : 1) - (b.toLowerCase().startsWith(v) ? 0 : 1)).slice(0, 8);
+    idx = -1;
+    box.innerHTML = items.map((x, i) => '<div class="sg" data-i="' + i + '">' + esc(x) + '</div>').join('');
+    box.classList.toggle('hidden', !items.length);
+  };
+  const pick = v => { inp.value = v; box.classList.add('hidden'); if (onPick) onPick(v); };
+  inp.addEventListener('input', show);
+  inp.addEventListener('focus', show);
+  inp.addEventListener('keydown', e => {
+    if (box.classList.contains('hidden')) return;
+    const els = box.children;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault(); idx = (idx + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      [...els].forEach((el, i) => el.classList.toggle('on', i === idx));
+    } else if (e.key === 'Enter' && idx >= 0) { e.preventDefault(); pick(items[idx]); }
+    else if (e.key === 'Escape') box.classList.add('hidden');
+  });
+  box.addEventListener('mousedown', e => { const d = e.target.closest('.sg'); if (d) { e.preventDefault(); pick(items[+d.dataset.i]); } });
+  inp.addEventListener('blur', () => setTimeout(() => box.classList.add('hidden'), 150));
+}
+const stateNames = Object.keys(STATES);
+const norm = s => s.trim().toLowerCase();
+const stateKey = () => stateNames.find(s => norm(s) === norm($('fState').value)) || '';
+suggest($('fState'), $('sState'), () => stateNames, () => { $('fCity').value = ''; $('fSchool').value = ''; $('fCity').placeholder = 'City type karein'; $('fCity').focus(); });
+suggest($('fCity'), $('sCity'), () => { const k = stateKey(); return k ? STATES[k].split(',') : []; }, () => { $('fSchool').value = ''; $('fSchool').focus(); });
+suggest($('fSchool'), $('sSchool'), () => {
+  const k = stateKey(), c = norm($('fCity').value);
+  const fromSheet = SERVER_SCHOOLS.filter(r => norm(r.state) === norm(k) && (!c || norm(r.city) === c)).map(r => r.school);
+  return [...new Set([...fromSheet, ...GENERIC_SCHOOLS.map(g => $('fCity').value.trim() ? g + ', ' + $('fCity').value.trim() : g)])];
+});
+
+function loadSchools() {
+  if (!CFG.sheetURL || CFG.sheetURL.includes('PASTE')) return;
+  fetch(CFG.sheetURL + '?action=schools').then(r => r.json()).then(j => { if (Array.isArray(j.schools)) SERVER_SCHOOLS = j.schools; }).catch(() => {});
+}
+loadSchools();
+
+// ===================== Paper UI =====================
 function go(i) { cur = i; seen[i] = true; render(); }
 
-function render() {
-  const q = Q[cur];
-  $('qno').textContent = 'Question ' + (cur + 1) + ' of ' + Q.length;
-  $('qsub').textContent = SUB[q.s] + ' • +' + CFG.plus + ' / −' + CFG.minus;
-  $('qtext').textContent = q.q;
-  $('opts').innerHTML = q.o.map((t, i) =>
-    '<button class="opt' + (ans[cur] === i ? ' sel' : '') + '" data-i="' + i + '"><b>' + 'ABCD'[i] + '</b>' + t + '</button>').join('');
-  $('tabs').innerHTML = Object.keys(SUB).map(k =>
-    '<button class="tab' + (k === q.s ? ' on' : '') + '" data-s="' + k + '">' + SUB[k] + '</button>').join('');
+function renderPal() {
   let h = '';
   for (const k in SUB) {
-    h += '<h4>' + SUB[k] + '</h4><div class="grid">';
-    Q.forEach((x, i) => {
-      if (x.s !== k) return;
-      const c = mk[i] ? 'm' : ans[i] >= 0 ? 'a' : seen[i] ? 'v' : '';
-      h += '<button class="pb ' + c + (i === cur ? ' cur' : '') + '" data-i="' + i + '">' + (i + 1) + '</button>';
+    h += '<h4>' + SUB[k] + '</h4>';
+    [['m', 'Section A (MCQ)'], ['n', 'Section B (Numerical)']].forEach(([t, lab]) => {
+      h += '<div style="font-size:11px;color:var(--mut);margin:6px 0 4px">' + lab + '</div><div class="grid">';
+      Q.forEach((x, i) => {
+        if (x.s !== k || x.t !== t) return;
+        const c = mk[i] ? 'm' : isAns(i) ? 'a' : seen[i] ? 'v' : '';
+        h += '<button class="pb ' + c + (i === cur ? ' cur' : '') + '" data-i="' + i + '">' + (i + 1) + '</button>';
+      });
+      h += '</div>';
     });
-    h += '</div>';
   }
   h += '<div class="leg"><span class="pb a">✓</span> Answered <span class="pb v">•</span> Not answered<br><span class="pb m">★</span> Marked <span class="pb">–</span> Not visited</div>';
   $('pal').innerHTML = h;
 }
 
-$('opts').onclick = e => { const b = e.target.closest('.opt'); if (b) { ans[cur] = +b.dataset.i; render(); } };
+function render() {
+  const q = Q[cur];
+  $('qno').textContent = 'Question ' + (cur + 1) + ' of ' + Q.length;
+  $('qsub').textContent = SUB[q.s] + ' • ' + (q.t === 'm' ? 'Section A (MCQ)' : 'Section B (Numerical)') + ' • +' + CFG.plus + ' / −' + (q.t === 'm' ? CFG.minus : CFG.numMinus);
+  $('qtext').innerHTML = q.q + q.f;
+  if (q.t === 'm') {
+    $('opts').innerHTML = q.o.map((t, i) =>
+      '<button class="opt' + (ans[cur] === i ? ' sel' : '') + '" data-i="' + i + '"><b>' + 'ABCD'[i] + '</b>' + t + '</button>').join('');
+  } else {
+    $('opts').innerHTML = '<div class="numbox"><input id="num" inputmode="decimal" autocomplete="off" placeholder="Answer" value="' + esc(ans[cur]) + '">' +
+      '<div class="kp">' + ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '−'].map(k => '<button data-k="' + (k === '−' ? '-' : k) + '">' + k + '</button>').join('') +
+      '<button data-k="back">⌫</button><button data-k="clear" style="grid-column:span 2">Clear</button></div></div>';
+    $('num').oninput = e => { e.target.value = e.target.value.replace(/[^0-9.\-]/g, ''); ans[cur] = e.target.value; renderPal(); };
+  }
+  $('tabs').innerHTML = Object.keys(SUB).map(k =>
+    '<button class="tab' + (k === q.s ? ' on' : '') + '" data-s="' + k + '">' + SUB[k] + '</button>').join('');
+  renderPal();
+}
+
+$('opts').onclick = e => {
+  const b = e.target.closest('.opt');
+  if (b) { ans[cur] = +b.dataset.i; render(); return; }
+  const k = e.target.closest('.kp button');
+  if (k) {
+    const v = k.dataset.k, n = $('num');
+    if (v === 'back') n.value = n.value.slice(0, -1);
+    else if (v === 'clear') n.value = '';
+    else if (v === '-') n.value = n.value.startsWith('-') ? n.value.slice(1) : '-' + n.value;
+    else n.value += v;
+    ans[cur] = n.value; renderPal();
+  }
+};
 $('pal').onclick = e => { const b = e.target.closest('.pb[data-i]'); if (b) go(+b.dataset.i); };
 $('tabs').onclick = e => { const b = e.target.closest('.tab'); if (b) go(Q.findIndex(x => x.s === b.dataset.s)); };
-$('next').onclick = () => go(Math.min(cur + 1, Q.length - 1));
+$('next').onclick = () => { mk[cur] = false; go(Math.min(cur + 1, Q.length - 1)); };
 $('prev').onclick = () => go(Math.max(cur - 1, 0));
 $('mark').onclick = () => { mk[cur] = true; go(Math.min(cur + 1, Q.length - 1)); };
-$('clr').onclick = () => { ans[cur] = -1; mk[cur] = false; render(); };
+$('clr').onclick = () => { ans[cur] = Q[cur].t === 'm' ? -1 : ''; mk[cur] = false; render(); };
 
 $('subBtn').onclick = () => {
-  const done = ans.filter(a => a >= 0).length;
+  const done = Q.filter((_, i) => isAns(i)).length;
   $('cM').textContent = 'You have answered ' + done + ' of ' + Q.length + ' questions. This cannot be undone.';
   $('conf').classList.remove('hidden');
 };
 $('cN').onclick = () => $('conf').classList.add('hidden');
-$('cY').onclick = () => submit('You submitted the paper.');
+$('cY').onclick = () => submit('You submitted the paper.', 'Manual submit');
 
-// ===== Start: full screen + timer =====
+// ===================== Start =====================
 $('go').onclick = () => {
+  const name = $('fName').value.trim().replace(/\s+/g, ' '), st = stateKey(), city = $('fCity').value.trim(), sch = $('fSchool').value.trim();
+  const err = !name || name.length < 3 ? 'Apna poora naam likhein.' : !st ? 'List me se State select karein.' : city.length < 2 ? 'City likhein ya select karein.' : sch.length < 3 ? 'School ka naam likhein ya select karein.' : '';
+  $('fErr').textContent = err;
+  if (err) return;
+  Object.assign(ST, { name, state: st, city, school: sch });
   const el = document.documentElement;
   (el.requestFullscreen ? el.requestFullscreen() : Promise.reject()).then(begin).catch(() =>
     alert('Full screen could not be started. Please open this page in a normal browser tab on a computer and try again.'));
@@ -219,14 +432,16 @@ function begin() {
   ac.resume();
   $('start').classList.add('hidden');
   $('exam').classList.remove('hidden');
+  $('who').textContent = ST.name + ' • ' + ST.school + ', ' + ST.city;
   run = true;
-  endAt = Date.now() + CFG.minutes * 60000;
+  startAt = Date.now();
+  endAt = startAt + CFG.minutes * 60000;
   go(0);
   tickT = setInterval(tick, 250);
   tick();
 }
 
-// ===== Alarm sound =====
+// ===================== Alarm =====================
 function beep() {
   if (!ac) return;
   const o = ac.createOscillator(), g = ac.createGain();
@@ -237,7 +452,7 @@ function beep() {
 function startBeep() { beep(); beepT = setInterval(beep, 600); }
 function stopBeep() { clearInterval(beepT); }
 
-// ===== Leaving-screen detection =====
+// ===================== Leaving-screen detection =====================
 function chk() {
   if (!run) return;
   const ok = !!document.fullscreenElement && !document.hidden && document.hasFocus();
@@ -259,58 +474,99 @@ $('aB').onclick = () => {
   if (p && p.then) p.then(chk).catch(chk); else chk();
 };
 
-// ===== Timer + violation countdown (uses real time, so background throttling cannot cheat it) =====
+// ===================== Timer + warning countdown (real time) =====================
 function tick() {
   const now = Date.now(), left = Math.max(0, endAt - now), s = Math.ceil(left / 1000);
   $('timer').textContent = [s / 3600 | 0, (s % 3600) / 60 | 0, s % 60].map(x => String(x).padStart(2, '0')).join(':');
   $('timer').classList.toggle('low', s < 300);
-  if (left <= 0) { submit('Time is up. Your paper was submitted automatically.'); return; }
+  if (left <= 0) { submit('Time is up. Your paper was submitted automatically.', 'Time up'); return; }
   if (viol) {
     const e = (now - viol) / 1000;
-    if (e >= CFG.grace + CFG.final) { submit('You stayed away from the exam screen, so your paper was auto-submitted.'); return; }
+    if (e >= CFG.grace + CFG.final) { submit('You stayed away from the exam screen, so your paper was auto-submitted.', 'Auto-submit (left screen)'); return; }
     if (e >= CFG.grace) {
-      $('aT').textContent = '⚠ Your paper will be submitted!';
+      $('aT').textContent = '⚠ WARNING 2 — Paper will be submitted!';
       $('aM').textContent = 'You did not return to the exam screen. Auto-submit in';
       $('aC').textContent = Math.ceil(CFG.grace + CFG.final - e);
     } else {
-      $('aT').textContent = '⚠ You left the exam screen!';
+      $('aT').textContent = '⚠ WARNING 1 — You left the exam screen!';
       $('aM').textContent = 'Return to the exam screen within';
       $('aC').textContent = Math.ceil(CFG.grace - e);
     }
   }
 }
 
-// ===== Submit + result =====
-function submit(msg) {
+// ===================== Submit + result =====================
+function submit(msg, reason) {
   if (!run) return;
   run = false; clearInterval(tickT); stopBeep();
   ['alert', 'conf'].forEach(i => $(i).classList.add('hidden'));
   if (document.fullscreenElement) document.exitFullscreen();
-  const T = {}; let tot = 0;
+  const T = {}; let tot = 0, C = 0, W = 0, U = 0;
   for (const k in SUB) T[k] = { c: 0, w: 0, u: 0, m: 0 };
   Q.forEach((q, i) => {
     const t = T[q.s];
-    if (ans[i] < 0) t.u++;
-    else if (ans[i] === q.a) { t.c++; t.m += CFG.plus; }
-    else { t.w++; t.m -= CFG.minus; }
+    if (!isAns(i)) { t.u++; U++; return; }
+    const ok = q.t === 'm' ? ans[i] === q.a : Math.abs(parseFloat(ans[i]) - q.a) < 1e-6;
+    if (ok) { t.c++; t.m += CFG.plus; C++; }
+    else { t.w++; t.m -= (q.t === 'm' ? CFG.minus : CFG.numMinus); W++; }
   });
   let rows = '';
   for (const k in SUB) { tot += T[k].m; rows += '<tr><td>' + SUB[k] + '</td><td>' + T[k].c + '</td><td>' + T[k].w + '</td><td>' + T[k].u + '</td><td><b>' + T[k].m + '</b></td></tr>'; }
   const rv = Q.map((q, i) => {
-    const yours = ans[i] < 0 ? '<span style="color:var(--mut)">Not attempted</span>' : (ans[i] === q.a ? '<span class="g">' + 'ABCD'[ans[i]] + ' ✓</span>' : '<span class="r">' + 'ABCD'[ans[i]] + ' ✗</span>');
-    return '<div class="rv"><b>Q' + (i + 1) + '.</b> ' + q.q + '<br>Your answer: ' + yours + ' &nbsp;|&nbsp; Correct: <b>' + 'ABCD'[q.a] + '. ' + q.o[q.a] + '</b></div>';
+    const given = q.t === 'm' ? 'ABCD'[ans[i]] : ans[i];
+    const ok = isAns(i) && (q.t === 'm' ? ans[i] === q.a : Math.abs(parseFloat(ans[i]) - q.a) < 1e-6);
+    const yours = !isAns(i) ? '<span style="color:var(--mut)">Not attempted</span>' : ok ? '<span class="g">' + esc(given) + ' ✓</span>' : '<span class="r">' + esc(given) + ' ✗</span>';
+    const corr = q.t === 'm' ? 'ABCD'[q.a] + '. ' + q.o[q.a] : q.a;
+    return '<div class="rv"><b>Q' + (i + 1) + '.</b> ' + q.q.replace(/<br>.*/s, '…') + '<br>Your answer: ' + yours + ' &nbsp;|&nbsp; Correct: <b>' + corr + '</b></div>';
   }).join('');
+
+  lastPayload = {
+    id: 'S' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    exam: CFG.examName, name: ST.name, state: ST.state, city: ST.city, school: ST.school,
+    total: tot, max: Q.length * CFG.plus,
+    subj: T, correct: C, wrong: W, unattempted: U,
+    warnings: vN, minutes: Math.round((Date.now() - startAt) / 6000) / 10, reason: reason,
+    answers: Q.map((q, i) => q.t === 'm' ? (ans[i] >= 0 ? 'ABCD'[ans[i]] : '') : String(ans[i]).trim())
+  };
+  try { localStorage.setItem('jee_last_result', JSON.stringify(lastPayload)); } catch (e) {}
+
   $('exam').classList.add('hidden');
   $('result').classList.remove('hidden');
-  $('result').innerHTML = '<div class="card"><h1>Test Submitted</h1><p style="color:var(--mut)">' + msg + '</p>' +
+  $('result').innerHTML = '<div class="card"><h1>Test Submitted</h1><p style="color:var(--mut)">' + esc(msg) + '</p>' +
+    '<p style="margin:4px 0"><b>' + esc(ST.name) + '</b><br><span style="color:var(--mut);font-size:13px">' + esc(ST.school) + ', ' + esc(ST.city) + ', ' + esc(ST.state) + '</span></p>' +
     '<div class="score">' + tot + ' <span style="font-size:20px;color:var(--mut)">/ ' + Q.length * CFG.plus + '</span></div>' +
     '<table><tr><th>Subject</th><th>Correct</th><th>Wrong</th><th>Skipped</th><th>Marks</th></tr>' + rows + '</table>' +
     '<p style="font-size:13px;color:var(--mut)">Warnings (times you left the screen): ' + vN + '</p>' +
-    '<details><summary style="cursor:pointer;font-weight:700">Review answers</summary>' + rv + '</details>' +
-    '<button class="btn" style="width:100%;margin-top:16px" onclick="location.reload()">Take test again</button></div>';
+    '<div id="saveStat" class="stat wait">Result save ho raha hai…</div>' +
+    '<button class="btn sec hidden" id="retry">Dobara save karein</button>' +
+    '<details><summary style="cursor:pointer;font-weight:700">Review answers</summary>' + rv + '</details></div>';
+  $('retry').onclick = saveResult;
+  saveResult();
 }
 
-// ===== Basic protection =====
+async function post(body, noCors) {
+  const opt = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body };
+  if (noCors) opt.mode = 'no-cors';
+  return fetch(CFG.sheetURL, opt);
+}
+async function saveResult() {
+  const st = $('saveStat'), rb = $('retry');
+  st.className = 'stat wait'; st.textContent = 'Result save ho raha hai…'; rb.classList.add('hidden');
+  if (!CFG.sheetURL || CFG.sheetURL.includes('PASTE')) { fail('Sheet URL set nahi hai (CFG.sheetURL). Result sirf is browser me save hai.'); return; }
+  const body = JSON.stringify(lastPayload);
+  try {
+    const r = await post(body, false), j = await r.json();
+    if (j.ok) { okMsg(); return; }
+    fail('Server ne error diya: ' + (j.error || 'unknown'));
+  } catch (e) {
+    try { await post(body, true); okMsg(true); }   // duplicate-safe (id se), response read nahi ho paya
+    catch (e2) { fail('Internet/connection problem. Dobara try karein.'); }
+  }
+  function okMsg(unsure) { st.className = 'stat ok'; st.textContent = '✓ Result sheet me save ho gaya' + (unsure ? ' (sent)' : '') + '. Aap ye window band kar sakte hain.'; }
+  function fail(t) { st.className = 'stat bad'; st.textContent = '⚠ ' + t; rb.classList.remove('hidden'); }
+}
+
+// ===================== Basic protection =====================
 addEventListener('beforeunload', e => { if (run) { e.preventDefault(); e.returnValue = ''; } });
 ['contextmenu', 'copy', 'cut', 'paste'].forEach(e => document.addEventListener(e, ev => { if (run) ev.preventDefault(); }));
 </script>
