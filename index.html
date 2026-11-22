@@ -251,6 +251,7 @@ nm('M', 'If the length of the chord of the circle x² + y² = r² (r &gt; 0) alo
 nm('M', 'The number of integral values of k for which the line 3x + 4y = k intersects the circle x² + y² − 4x − 6y + 9 = 0 at two distinct points is:', 19);
 nm('M', 'Two vertices of a triangle ABC are A(4, −2) and B(−2, 4), and its orthocentre is P(0, 0). If the coordinates of the point C are (α, β) and the centroid of the triangle PAB is (h, k), then the absolute value of (α + β) + 9(h + k) equals:', 4);
 //==QDATA END
+Q.forEach((q, i) => q.id = i);   // original question number (used for solutions, topics and sheet columns)
 
 // ===================== SCHOOL DATA (State -> Cities) =====================
 const STATES = {
@@ -434,7 +435,24 @@ $('go').onclick = () => {
     alert('Full screen could not be started. Please open this page in a normal browser tab on a computer and try again.'));
 };
 
+// Random paper for every student: questions are shuffled inside each subject/section and MCQ options are shuffled too
+function shuffleExam() {
+  const sh = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const groups = {};
+  Q.forEach((q, i) => (groups[q.s + q.t] = groups[q.s + q.t] || []).push(i));
+  Object.values(groups).forEach(pos => {
+    const items = sh(pos.map(i => Q[i]));
+    pos.forEach((p, k) => Q[p] = items[k]);
+  });
+  Q.forEach(q => {
+    if (q.t !== 'm' || q.o.some(o => /none of these|all of the above/i.test(o))) return;
+    const perm = sh(q.o.map((_, i) => i));          // perm[newIndex] = original index
+    q.o = perm.map(i => q.o[i]); q.a = perm.indexOf(q.a); q.perm = perm;
+  });
+}
+
 function begin() {
+  shuffleExam();
   ac = new (window.AudioContext || window.webkitAudioContext)();
   ac.resume();
   $('start').classList.add('hidden');
@@ -539,7 +557,7 @@ function submit(msg, reason) {
     total: tot, max: Q.length * CFG.plus,
     subj: T, correct: C, wrong: W, unattempted: U,
     warnings: vN, minutes: Math.round((Date.now() - startAt) / 6000) / 10, reason: reason,
-    answers: Q.map((q, i) => q.t === 'm' ? (ans[i] >= 0 ? 'ABCD'[ans[i]] : '') : String(ans[i]).trim())
+    answers: (() => { const o = []; Q.forEach((q, i) => { o[q.id] = q.t === 'm' ? (ans[i] >= 0 ? 'ABCD'[q.perm ? q.perm[ans[i]] : ans[i]] : '') : String(ans[i]).trim(); }); return o; })()
   };
   try { localStorage.setItem('jee_last_result', JSON.stringify(lastPayload)); } catch (e) {}
 
@@ -587,13 +605,17 @@ async function saveResult() {
 
 // ===================== Personal PDF report (built on the student's own device; never uploaded) =====================
 function buildReport(STAT, T, tot, C, W, U) {
+  const endT = Date.now(), p2 = n => String(n).padStart(2, '0');
+  const fmtD = t => { const d = new Date(t); return p2(d.getDate()) + '/' + p2(d.getMonth() + 1) + '/' + d.getFullYear(); };
+  const fmtT = t => { const d = new Date(t); let hh = d.getHours(); const ap = hh >= 12 ? 'PM' : 'AM'; hh = hh % 12 || 12; return p2(hh) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds()) + ' ' + ap; };
+  const fmtDur = ms => { const s = Math.round(ms / 1000); return p2(s / 3600 | 0) + ' h ' + p2((s % 3600) / 60 | 0) + ' min ' + p2(s % 60) + ' s'; };
   const max = Q.length * CFG.plus, att = C + W, acc = att ? Math.round(C * 100 / att) : 0;
   const pc = (a, b) => b ? Math.round(a * 100 / b) : 0;
   const lvl = p => p >= 70 ? ['Strong', '#16a34a'] : p >= 40 ? ['Improving', '#d97706'] : ['Focus area', '#0891b2'];
   const subjQ = {}, topic = {};
   for (const k in SUB) subjQ[k] = Q.filter(q => q.s === k).length;
   Q.forEach((q, i) => {
-    const n = TOPIC_NAMES[TOPIC[i]] || 'General', t = topic[n] = topic[n] || { s: q.s, tot: 0, c: 0, w: 0, u: 0 };
+    const n = TOPIC_NAMES[TOPIC[Q[i].id]] || 'General', t = topic[n] = topic[n] || { s: q.s, tot: 0, c: 0, w: 0, u: 0 };
     t.tot++; t[STAT[i]]++;
   });
   const ks = Object.keys(SUB).sort((a, b) => T[b].m - T[a].m);
@@ -636,7 +658,8 @@ function buildReport(STAT, T, tot, C, W, U) {
     (strong.length ? '<p class="ok">💪 Keep it up in: ' + strong.map(t => t.name).join(', ') + '.</p>' : '');
 
   const first = '<div class="pg1">' +
-    '<div class="hd"><div><div class="ex">' + esc(CFG.examName) + ' • Personal Performance Report</div><h1>' + esc(ST.name) + '</h1><div class="sub">' + esc(ST.school) + ', ' + esc(ST.city) + ', ' + esc(ST.state) + '</div></div>' +
+    '<div class="hd"><div><div class="ex">' + esc(CFG.examName) + ' • Personal Performance Report</div><h1>' + esc(ST.name) + '</h1><div class="sub">' + esc(ST.school) + ', ' + esc(ST.city) + ', ' + esc(ST.state) + '</div>' +
+    '<div class="sub" style="margin-top:6px"><b>Date:</b> ' + fmtD(startAt) + ' &nbsp;•&nbsp; <b>Start:</b> ' + fmtT(startAt) + ' &nbsp;•&nbsp; <b>End:</b> ' + fmtT(endT) + ' &nbsp;•&nbsp; <b>Time taken:</b> ' + fmtDur(endT - startAt) + '</div></div>' +
     '<svg width="110" height="110" viewBox="0 0 100 100"><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#ffffff33" stroke-width="10"/><circle cx="50" cy="50" r="' + R + '" fill="none" stroke="#67e8f9" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + ring + ' ' + CI + '" transform="rotate(-90 50 50)"/><text x="50" y="49" text-anchor="middle" font-size="19" font-weight="800" fill="#fff">' + tot + '</text><text x="50" y="64" text-anchor="middle" font-size="10" fill="#cfe9f5">out of ' + max + '</text></svg></div>' +
     '<div class="tiles"><div><b style="color:#16a34a">' + C + '</b>Correct</div><div><b style="color:#d97706">' + W + '</b>Wrong</div><div><b style="color:#64748b">' + U + '</b>Skipped</div><div><b style="color:#0891b2">' + acc + '%</b>Accuracy on attempted</div></div>' +
     '<h2>Subject-wise snapshot</h2><div class="subs">' + subjCards + '</div>' +
@@ -655,8 +678,8 @@ function buildReport(STAT, T, tot, C, W, U) {
       const given = skipped ? 'Not attempted' : q.t === 'm' ? 'ABCD'[ans[i]] + '. ' + q.o[ans[i]] : String(ans[i]);
       const corr = q.t === 'm' ? 'ABCD'[q.a] + '. ' + q.o[q.a] : String(q.a);
       const opts = q.t === 'm' ? '<div class="op">' + q.o.map((o, j) => '<div' + (j === q.a ? ' class="co"' : '') + '><b>' + 'ABCD'[j] + '</b> ' + o + '</div>').join('') + '</div>' : '';
-      const steps = (SOL[i] || 'Refer to your teacher for this solution.').split(' | ').map(s => '<li>' + s + '</li>').join('');
-      return '<div class="sol"><div class="sq"><b>Q' + (i + 1) + '</b> <span class="chip">' + (TOPIC_NAMES[TOPIC[i]] || '') + '</span> <span class="chip ' + (skipped ? 'sk' : 'wr') + '">' + (skipped ? 'Skipped' : 'Incorrect') + '</span></div>' +
+      const steps = (SOL[Q[i].id] || 'Refer to your teacher for this solution.').split(' | ').map(s => '<li>' + s + '</li>').join('');
+      return '<div class="sol"><div class="sq"><b>Q' + (i + 1) + '</b> <span class="chip">' + (TOPIC_NAMES[TOPIC[Q[i].id]] || '') + '</span> <span class="chip ' + (skipped ? 'sk' : 'wr') + '">' + (skipped ? 'Skipped' : 'Incorrect') + '</span></div>' +
         '<div class="qt">' + q.q + q.f + '</div>' + opts +
         '<div class="ans">Your answer: <b>' + esc(given).replace(/&lt;(\/?)(sub|sup)&gt;/g, '<$1$2>') + '</b> &nbsp;|&nbsp; Correct answer: <b class="g">' + corr + '</b></div>' +
         '<div class="st"><b>Solution</b><ol>' + steps + '</ol></div></div>';
